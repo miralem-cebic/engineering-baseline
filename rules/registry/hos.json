@@ -14,7 +14,7 @@
         "type": "file-contains",
         "paths": [
           "netlify.toml",
-          "public/_headers",
+          "public/_headers", "landing/_headers",
           "vercel.json",
           "staticwebapp.config.json"
         ],
@@ -39,7 +39,7 @@
         "type": "file-contains",
         "paths": [
           "netlify.toml",
-          "public/_headers",
+          "public/_headers", "landing/_headers",
           "vercel.json",
           "staticwebapp.config.json"
         ],
@@ -63,7 +63,7 @@
         "type": "file-contains",
         "paths": [
           "netlify.toml",
-          "public/_headers",
+          "public/_headers", "landing/_headers",
           "vercel.json",
           "staticwebapp.config.json"
         ],
@@ -87,7 +87,7 @@
         "type": "file-not-contains",
         "paths": [
           "netlify.toml",
-          "public/_headers",
+          "public/_headers", "landing/_headers",
           "vercel.json",
           "staticwebapp.config.json"
         ],
@@ -129,7 +129,7 @@
         "type": "file-contains",
         "paths": [
           "netlify.toml",
-          "public/_headers",
+          "public/_headers", "landing/_headers",
           "vercel.json",
           "staticwebapp.config.json"
         ],
