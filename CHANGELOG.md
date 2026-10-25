@@ -21,4 +21,5 @@ All notable changes are listed here. The format follows
   `templates/scripts/apply-repo-settings.sh`.
 - Dependabot ignores TypeScript 7 (breaks `typescript-eslint` peer range) and `@types/node` majors beyond Node 22.
 - Step-by-step adoption guide in the README (worked example: teamtodo).
+- Header rules `HOS-001..006` also accept `landing/_headers` (Netlify sites whose publish dir is generated from `landing/`).
 - Templates for `CLAUDE.md`, slash commands, `baseline.json` and workflows.
