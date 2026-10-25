@@ -13,3 +13,12 @@ Development dependencies, each with the native alternative that was considered:
 
 The tool loads the **project's own** ESLint at run time (never a bundled one), so it adds no dependency for the
 projects it checks.
+
+## Pinned on purpose
+
+| Package | Held at | Why | Lift when |
+|---|---|---|---|
+| `typescript` | below 6.1 | `typescript-eslint` declares a peer range of `<6.1`; TypeScript 7 makes `npm ci` fail with ERESOLVE | `typescript-eslint` supports TS 7 |
+| `@types/node` | major 22 | Types must match the Node version CI and `engines` use | The project moves to a newer Node LTS |
+
+Both are enforced by `ignore` entries in `.github/dependabot.yml`, so Dependabot does not propose them.
