@@ -7,6 +7,13 @@ updates:
     groups:
       dev-tooling:
         patterns: ['*']
+    ignore:
+      # typescript-eslint supports only TypeScript <6.1; TS 7 breaks `npm ci` (ERESOLVE). Lift when it catches up.
+      - dependency-name: typescript
+        versions: ['>=6.1.0']
+      # Types must match the Node version CI and `engines` run on (22).
+      - dependency-name: '@types/node'
+        update-types: ['version-update:semver-major']
   - package-ecosystem: github-actions
     directory: /
     schedule:
