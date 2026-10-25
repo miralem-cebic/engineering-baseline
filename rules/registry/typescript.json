@@ -1,0 +1,404 @@
+[
+  {
+    "id": "TS-001",
+    "title": "TypeScript strict mode is on",
+    "rationale": "The baseline for catching null, any and implicit coercion at compile time.",
+    "level": "must",
+    "since": "0.1.0",
+    "ecosystems": [
+      "typescript"
+    ],
+    "checks": [
+      {
+        "type": "json-value",
+        "files": [
+          "tsconfig.json",
+          "tsconfig.app.json"
+        ],
+        "path": "compilerOptions.strict",
+        "expected": true,
+        "resolveExtends": true
+      }
+    ],
+    "hint": "Set compilerOptions.strict to true."
+  },
+  {
+    "id": "TS-002",
+    "title": "Indexed access is checked",
+    "rationale": "array[i] and record[key] can be undefined; without this flag the compiler claims otherwise.",
+    "level": "must",
+    "since": "0.1.0",
+    "ecosystems": [
+      "typescript"
+    ],
+    "checks": [
+      {
+        "type": "json-value",
+        "files": [
+          "tsconfig.json",
+          "tsconfig.app.json"
+        ],
+        "path": "compilerOptions.noUncheckedIndexedAccess",
+        "expected": true,
+        "resolveExtends": true
+      }
+    ]
+  },
+  {
+    "id": "TS-003",
+    "title": "Optional properties are exact",
+    "rationale": "Distinguishes \"absent\" from \"undefined\" and avoids bugs in merges and patches.",
+    "level": "should",
+    "since": "0.1.0",
+    "ecosystems": [
+      "typescript"
+    ],
+    "checks": [
+      {
+        "type": "json-value",
+        "files": [
+          "tsconfig.json",
+          "tsconfig.app.json"
+        ],
+        "path": "compilerOptions.exactOptionalPropertyTypes",
+        "expected": true,
+        "resolveExtends": true
+      }
+    ]
+  },
+  {
+    "id": "TS-004",
+    "title": "Index-signature access uses brackets",
+    "rationale": "Makes dynamic keys visible in the code.",
+    "level": "should",
+    "since": "0.1.0",
+    "ecosystems": [
+      "typescript"
+    ],
+    "checks": [
+      {
+        "type": "json-value",
+        "files": [
+          "tsconfig.json",
+          "tsconfig.app.json"
+        ],
+        "path": "compilerOptions.noPropertyAccessFromIndexSignature",
+        "expected": true,
+        "resolveExtends": true
+      }
+    ]
+  },
+  {
+    "id": "TS-005",
+    "title": "Every code path returns",
+    "rationale": "Implicit undefined returns are silent logic errors.",
+    "level": "should",
+    "since": "0.1.0",
+    "ecosystems": [
+      "typescript"
+    ],
+    "checks": [
+      {
+        "type": "json-value",
+        "files": [
+          "tsconfig.json",
+          "tsconfig.app.json"
+        ],
+        "path": "compilerOptions.noImplicitReturns",
+        "expected": true,
+        "resolveExtends": true
+      }
+    ]
+  },
+  {
+    "id": "TS-006",
+    "title": "Switch fallthrough is an error",
+    "rationale": "Accidental fallthrough is a classic source of wrong behaviour.",
+    "level": "must",
+    "since": "0.1.0",
+    "ecosystems": [
+      "typescript"
+    ],
+    "checks": [
+      {
+        "type": "json-value",
+        "files": [
+          "tsconfig.json",
+          "tsconfig.app.json"
+        ],
+        "path": "compilerOptions.noFallthroughCasesInSwitch",
+        "expected": true,
+        "resolveExtends": true
+      }
+    ]
+  },
+  {
+    "id": "TS-007",
+    "title": "Unused code is an error",
+    "rationale": "Dead code hides intent and rots.",
+    "level": "should",
+    "since": "0.1.0",
+    "ecosystems": [
+      "typescript"
+    ],
+    "checks": [
+      {
+        "type": "json-value",
+        "files": [
+          "tsconfig.json",
+          "tsconfig.app.json"
+        ],
+        "path": "compilerOptions.noUnusedLocals",
+        "expected": true,
+        "resolveExtends": true
+      },
+      {
+        "type": "json-value",
+        "files": [
+          "tsconfig.json",
+          "tsconfig.app.json"
+        ],
+        "path": "compilerOptions.noUnusedParameters",
+        "expected": true,
+        "resolveExtends": true
+      }
+    ]
+  },
+  {
+    "id": "TS-008",
+    "title": "Type-only imports are explicit",
+    "rationale": "verbatimModuleSyntax keeps emitted imports predictable and tree-shaking honest.",
+    "level": "proposed",
+    "since": "0.1.0",
+    "ecosystems": [
+      "typescript"
+    ],
+    "checks": [
+      {
+        "type": "json-value",
+        "files": [
+          "tsconfig.json",
+          "tsconfig.app.json"
+        ],
+        "path": "compilerOptions.verbatimModuleSyntax",
+        "expected": true,
+        "resolveExtends": true
+      }
+    ]
+  },
+  {
+    "id": "TS-009",
+    "title": "Overrides are explicit",
+    "rationale": "noImplicitOverride stops silent breakage when a base class changes.",
+    "level": "proposed",
+    "since": "0.1.0",
+    "ecosystems": [
+      "typescript"
+    ],
+    "checks": [
+      {
+        "type": "json-value",
+        "files": [
+          "tsconfig.json",
+          "tsconfig.app.json"
+        ],
+        "path": "compilerOptions.noImplicitOverride",
+        "expected": true,
+        "resolveExtends": true
+      }
+    ]
+  },
+  {
+    "id": "TS-010",
+    "title": "Lint fails on warnings",
+    "rationale": "Warnings that do not fail are ignored within a month.",
+    "level": "must",
+    "since": "0.1.0",
+    "ecosystems": [
+      "typescript"
+    ],
+    "checks": [
+      {
+        "type": "package-script",
+        "scripts": [
+          "lint"
+        ],
+        "pattern": "max-warnings[ =]0"
+      }
+    ],
+    "hint": "Use \"eslint . --max-warnings 0\"."
+  },
+  {
+    "id": "TS-011",
+    "title": "A type-check script exists",
+    "rationale": "Type errors must be runnable in CI independently of the bundler.",
+    "level": "must",
+    "since": "0.1.0",
+    "ecosystems": [
+      "typescript"
+    ],
+    "checks": [
+      {
+        "type": "file-contains",
+        "paths": [
+          "package.json"
+        ],
+        "pattern": "\"(typecheck|type-check)\"\\s*:"
+      }
+    ]
+  },
+  {
+    "id": "TS-012",
+    "title": "any is forbidden",
+    "rationale": "any switches the compiler off for everything it touches.",
+    "level": "must",
+    "since": "0.1.0",
+    "ecosystems": [
+      "typescript"
+    ],
+    "checks": [
+      {
+        "type": "eslint-rule",
+        "rule": "@typescript-eslint/no-explicit-any"
+      }
+    ]
+  },
+  {
+    "id": "TS-013",
+    "title": "Non-null assertions are forbidden",
+    "rationale": "x! is a promise the compiler cannot verify; narrow or validate instead.",
+    "level": "should",
+    "since": "0.1.0",
+    "ecosystems": [
+      "typescript"
+    ],
+    "checks": [
+      {
+        "type": "eslint-rule",
+        "rule": "@typescript-eslint/no-non-null-assertion"
+      }
+    ]
+  },
+  {
+    "id": "TS-014",
+    "title": "Promises cannot be left floating",
+    "rationale": "Unawaited promises swallow errors and race with the code after them.",
+    "level": "should",
+    "since": "0.1.0",
+    "ecosystems": [
+      "typescript"
+    ],
+    "checks": [
+      {
+        "type": "eslint-rule",
+        "rule": "@typescript-eslint/no-floating-promises"
+      }
+    ]
+  },
+  {
+    "id": "TS-015",
+    "title": "Switches over unions are exhaustive",
+    "rationale": "Adding a union member must break the build where it matters.",
+    "level": "should",
+    "since": "0.1.0",
+    "ecosystems": [
+      "typescript"
+    ],
+    "checks": [
+      {
+        "type": "eslint-rule",
+        "rule": "@typescript-eslint/switch-exhaustiveness-check"
+      }
+    ]
+  },
+  {
+    "id": "TS-016",
+    "title": "Type assertions are restricted",
+    "rationale": "as casts are unchecked claims; parse at the boundary instead.",
+    "level": "proposed",
+    "since": "0.1.0",
+    "ecosystems": [
+      "typescript"
+    ],
+    "checks": [
+      {
+        "type": "eslint-rule",
+        "rule": "@typescript-eslint/consistent-type-assertions"
+      }
+    ]
+  },
+  {
+    "id": "TS-020",
+    "title": "The Node version is pinned",
+    "rationale": "Same runtime locally and in CI avoids works-on-my-machine failures.",
+    "level": "should",
+    "since": "0.1.0",
+    "ecosystems": [
+      "typescript"
+    ],
+    "checks": [
+      {
+        "type": "json-value",
+        "files": [
+          "package.json"
+        ],
+        "path": "engines.node",
+        "expected": {
+          "exists": true
+        }
+      }
+    ]
+  },
+  {
+    "id": "TS-021",
+    "title": "CI installs from the lockfile",
+    "rationale": "npm install may change the tree; npm ci reproduces it or fails.",
+    "level": "must",
+    "since": "0.1.0",
+    "ecosystems": [
+      "typescript"
+    ],
+    "checks": [
+      {
+        "type": "file-contains",
+        "paths": [
+          ".github/workflows/ci.yml",
+          ".github/workflows/vite-ci.yml",
+          ".github/workflows/build.yml"
+        ],
+        "pattern": "npm ci|pnpm install --frozen-lockfile|yarn install --immutable|yarn --frozen-lockfile"
+      }
+    ]
+  },
+  {
+    "id": "TS-022",
+    "title": "External data is validated at the boundary",
+    "rationale": "JSON.parse(x) as T is a lie; parse into a validated type (hand-written guard or Zod) where data enters.",
+    "level": "should",
+    "since": "0.1.0",
+    "ecosystems": [
+      "typescript"
+    ],
+    "checks": [
+      {
+        "type": "manual"
+      }
+    ],
+    "hint": "Review: no `as` on parsed data; validation lives in one module."
+  },
+  {
+    "id": "TS-023",
+    "title": "Failures are values at module boundaries",
+    "rationale": "Result values make failure paths visible in types, as Rust does; exceptions stay for bugs.",
+    "level": "proposed",
+    "since": "0.1.0",
+    "ecosystems": [
+      "typescript"
+    ],
+    "checks": [
+      {
+        "type": "manual"
+      }
+    ]
+  }
+]

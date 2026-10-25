@@ -1,0 +1,111 @@
+[
+  {
+    "id": "CSH-001",
+    "title": "Nullable reference types are enabled",
+    "rationale": "The compiler tracks null; this is C#'s answer to Option.",
+    "level": "proposed",
+    "since": "0.1.0",
+    "ecosystems": [
+      "csharp"
+    ],
+    "checks": [
+      {
+        "type": "file-contains",
+        "paths": [
+          "Directory.Build.props"
+        ],
+        "pattern": "<Nullable>\\s*enable"
+      }
+    ]
+  },
+  {
+    "id": "CSH-002",
+    "title": "Warnings are errors",
+    "rationale": "TreatWarningsAsErrors keeps the build honest.",
+    "level": "proposed",
+    "since": "0.1.0",
+    "ecosystems": [
+      "csharp"
+    ],
+    "checks": [
+      {
+        "type": "file-contains",
+        "paths": [
+          "Directory.Build.props"
+        ],
+        "pattern": "<TreatWarningsAsErrors>\\s*true"
+      }
+    ]
+  },
+  {
+    "id": "CSH-003",
+    "title": "The latest analyzers run at full strength",
+    "rationale": "AnalysisLevel latest-all enables every built-in analyzer.",
+    "level": "proposed",
+    "since": "0.1.0",
+    "ecosystems": [
+      "csharp"
+    ],
+    "checks": [
+      {
+        "type": "file-contains",
+        "paths": [
+          "Directory.Build.props"
+        ],
+        "pattern": "<AnalysisLevel>\\s*latest-all"
+      }
+    ]
+  },
+  {
+    "id": "CSH-004",
+    "title": "Code style is enforced in the build",
+    "rationale": "EnforceCodeStyleInBuild makes .editorconfig style rules fail builds.",
+    "level": "proposed",
+    "since": "0.1.0",
+    "ecosystems": [
+      "csharp"
+    ],
+    "checks": [
+      {
+        "type": "file-contains",
+        "paths": [
+          "Directory.Build.props"
+        ],
+        "pattern": "<EnforceCodeStyleInBuild>\\s*true"
+      }
+    ]
+  },
+  {
+    "id": "CSH-005",
+    "title": "Package versions are managed centrally",
+    "rationale": "Directory.Packages.props keeps one version per package across projects.",
+    "level": "proposed",
+    "since": "0.1.0",
+    "ecosystems": [
+      "csharp"
+    ],
+    "checks": [
+      {
+        "type": "file-exists",
+        "paths": [
+          "Directory.Packages.props"
+        ]
+      }
+    ]
+  },
+  {
+    "id": "CSH-006",
+    "title": "Microsoft packages are preferred over third-party ones",
+    "rationale": "The BCL and Microsoft.Extensions cover most needs with long-term support.",
+    "level": "proposed",
+    "since": "0.1.0",
+    "ecosystems": [
+      "csharp"
+    ],
+    "checks": [
+      {
+        "type": "manual"
+      }
+    ]
+  }
+]

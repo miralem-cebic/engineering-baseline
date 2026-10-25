@@ -1,0 +1,101 @@
+[
+  {
+    "id": "REL-001",
+    "title": "The UI has an error boundary",
+    "rationale": "One thrown render error must not blank the application or lose user data.",
+    "level": "must",
+    "since": "0.1.0",
+    "ecosystems": [
+      "react"
+    ],
+    "checks": [
+      {
+        "type": "repo-contains",
+        "dirs": [
+          "src"
+        ],
+        "exts": [
+          ".ts",
+          ".tsx"
+        ],
+        "pattern": "ErrorBoundary|componentDidCatch|react-error-boundary"
+      }
+    ]
+  },
+  {
+    "id": "REL-002",
+    "title": "Routes and heavy views are lazy-loaded",
+    "rationale": "Start-up cost is paid once per user; code they never open should not be in it.",
+    "level": "should",
+    "since": "0.1.0",
+    "ecosystems": [
+      "react"
+    ],
+    "topologies": [
+      "hosted-no-db",
+      "hosted-db"
+    ],
+    "checks": [
+      {
+        "type": "repo-contains",
+        "dirs": [
+          "src"
+        ],
+        "exts": [
+          ".ts",
+          ".tsx"
+        ],
+        "pattern": "React\\.lazy|\\blazy\\("
+      }
+    ],
+    "hint": "Local-only builds are one file and cannot be split, so this applies to hosted apps."
+  },
+  {
+    "id": "REL-003",
+    "title": "React hooks rules are linted",
+    "rationale": "Hook-order bugs are crashes that only appear on some renders.",
+    "level": "must",
+    "since": "0.1.0",
+    "ecosystems": [
+      "react"
+    ],
+    "checks": [
+      {
+        "type": "eslint-rule",
+        "rule": "react-hooks/rules-of-hooks"
+      }
+    ]
+  },
+  {
+    "id": "REL-004",
+    "title": "React is on the current major",
+    "rationale": "Old majors lose security fixes and ecosystem support.",
+    "level": "should",
+    "since": "0.1.0",
+    "ecosystems": [
+      "react"
+    ],
+    "checks": [
+      {
+        "type": "file-contains",
+        "paths": [
+          "package.json"
+        ],
+        "pattern": "\"react\":\\s*\"[\\^~]?(19|[2-9]\\d)"
+      }
+    ]
+  },
+  {
+    "id": "REL-005",
+    "title": "Performance budgets are checked",
+    "rationale": "Speed regresses by small steps nobody notices; a budget turns it into a failing check.",
+    "level": "proposed",
+    "since": "0.1.0",
+    "checks": [
+      {
+        "type": "manual"
+      }
+    ],
+    "hint": "Fail CI when the main bundle or start-up time exceeds the agreed budget."
+  }
+]

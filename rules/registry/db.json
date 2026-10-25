@@ -1,0 +1,154 @@
+[
+  {
+    "id": "DB-001",
+    "title": "Tenant isolation is enforced by row-level security",
+    "rationale": "The database is the only layer that cannot be bypassed by a client bug.",
+    "level": "must",
+    "since": "0.1.0",
+    "ecosystems": [
+      "postgres"
+    ],
+    "topologies": [
+      "hosted-db"
+    ],
+    "checks": [
+      {
+        "type": "manual"
+      }
+    ],
+    "hint": "Every tenant table has tenant_id and policies; no service-role key in the client."
+  },
+  {
+    "id": "DB-002",
+    "title": "Migration numbers are unique",
+    "rationale": "Two migrations with one number apply in an undefined order.",
+    "level": "must",
+    "since": "0.1.0",
+    "ecosystems": [
+      "postgres"
+    ],
+    "topologies": [
+      "hosted-db"
+    ],
+    "checks": [
+      {
+        "type": "dir-unique-prefix",
+        "dirs": [
+          "supabase/patches"
+        ],
+        "prefix": "patch_"
+      },
+      {
+        "type": "dir-unique-prefix",
+        "dirs": [
+          "supabase/migrations"
+        ],
+        "prefix": ""
+      }
+    ]
+  },
+  {
+    "id": "DB-003",
+    "title": "Every table enables RLS",
+    "rationale": "A table without RLS is readable by every authenticated user.",
+    "level": "must",
+    "since": "0.1.0",
+    "ecosystems": [
+      "postgres"
+    ],
+    "topologies": [
+      "hosted-db"
+    ],
+    "checks": [
+      {
+        "type": "sql-tables-have-rls",
+        "dirs": [
+          "supabase/patches",
+          "supabase/migrations"
+        ]
+      }
+    ],
+    "hint": "Add ALTER TABLE ... ENABLE ROW LEVEL SECURITY right after CREATE TABLE."
+  },
+  {
+    "id": "DB-004",
+    "title": "RLS policies have automated tests",
+    "rationale": "Policies are code; pgTAP tests prove tenant A cannot read tenant B.",
+    "level": "should",
+    "since": "0.1.0",
+    "ecosystems": [
+      "postgres"
+    ],
+    "topologies": [
+      "hosted-db"
+    ],
+    "checks": [
+      {
+        "type": "file-exists",
+        "paths": [
+          "supabase/tests",
+          "supabase/tests/database"
+        ]
+      }
+    ]
+  },
+  {
+    "id": "DB-005",
+    "title": "Deletes are soft and reads filter them",
+    "rationale": "Recoverability and audit need rows to stay.",
+    "level": "should",
+    "since": "0.1.0",
+    "ecosystems": [
+      "postgres"
+    ],
+    "topologies": [
+      "hosted-db"
+    ],
+    "checks": [
+      {
+        "type": "manual"
+      }
+    ]
+  },
+  {
+    "id": "DB-006",
+    "title": "Changes are audited by a trigger",
+    "rationale": "Audit that depends on client code is not audit.",
+    "level": "should",
+    "since": "0.1.0",
+    "ecosystems": [
+      "postgres"
+    ],
+    "topologies": [
+      "hosted-db"
+    ],
+    "checks": [
+      {
+        "type": "manual"
+      }
+    ]
+  },
+  {
+    "id": "DB-007",
+    "title": "Generated database types are committed",
+    "rationale": "The client types follow the schema, not memory.",
+    "level": "should",
+    "since": "0.1.0",
+    "ecosystems": [
+      "postgres"
+    ],
+    "topologies": [
+      "hosted-db"
+    ],
+    "checks": [
+      {
+        "type": "file-exists",
+        "paths": [
+          "src/lib/database.types.ts",
+          "src/types/database.types.ts",
+          "database.types.ts"
+        ]
+      }
+    ]
+  }
+]

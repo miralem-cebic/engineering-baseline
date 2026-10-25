@@ -1,0 +1,130 @@
+[
+  {
+    "id": "AI-001",
+    "title": "CLAUDE.md exists",
+    "rationale": "Agents start every session without memory; the file is how a project teaches its rules.",
+    "level": "must",
+    "since": "0.1.0",
+    "checks": [
+      {
+        "type": "file-exists",
+        "paths": [
+          "CLAUDE.md"
+        ]
+      }
+    ]
+  },
+  {
+    "id": "AI-002",
+    "title": "CLAUDE.md stays short",
+    "rationale": "Long instruction files are skimmed; invariants get lost. Link to details instead of inlining them.",
+    "level": "should",
+    "since": "0.1.0",
+    "checks": [
+      {
+        "type": "max-lines",
+        "path": "CLAUDE.md",
+        "max": 250
+      }
+    ],
+    "hint": "Move reference material to docs/ and import it with @path."
+  },
+  {
+    "id": "AI-003",
+    "title": "CLAUDE.md lists the commands to verify work",
+    "rationale": "An agent that cannot run the gates cannot honestly claim to be done.",
+    "level": "should",
+    "since": "0.1.0",
+    "checks": [
+      {
+        "type": "file-contains",
+        "paths": [
+          "CLAUDE.md"
+        ],
+        "pattern": "(npm|pnpm|yarn|swift|dotnet|gradle|gradlew|pytest|uv|cargo) (run )?(test|build|lint|check|typecheck)",
+        "flags": "i"
+      }
+    ]
+  },
+  {
+    "id": "AI-004",
+    "title": "CLAUDE.md states hard invariants",
+    "rationale": "Rules that must never be broken belong in one place the agent reads first.",
+    "level": "should",
+    "since": "0.1.0",
+    "checks": [
+      {
+        "type": "file-contains",
+        "paths": [
+          "CLAUDE.md"
+        ],
+        "pattern": "^#+\\s.*(invariant|non-negotiable|must keep|hard rules|never)",
+        "flags": "mi"
+      }
+    ]
+  },
+  {
+    "id": "AI-005",
+    "title": "CLAUDE.md requires test-first work",
+    "rationale": "Red, green, refactor keeps agent-written code honest and small.",
+    "level": "should",
+    "since": "0.1.0",
+    "checks": [
+      {
+        "type": "file-contains",
+        "paths": [
+          "CLAUDE.md"
+        ],
+        "pattern": "test[- ]first|test[- ]driven|\\bTDD\\b|red[- ]green",
+        "flags": "i"
+      }
+    ]
+  },
+  {
+    "id": "AI-006",
+    "title": "CLAUDE.md defines when a task is done",
+    "rationale": "Without a definition of done, agents stop at \"compiles\".",
+    "level": "should",
+    "since": "0.1.0",
+    "checks": [
+      {
+        "type": "file-contains",
+        "paths": [
+          "CLAUDE.md"
+        ],
+        "pattern": "definition of done|done when|before (considering|claiming|committing|you finish)|verify",
+        "flags": "i"
+      }
+    ]
+  },
+  {
+    "id": "AI-007",
+    "title": "Claude Code settings are committed",
+    "rationale": "Shared permissions and hooks make agent behaviour reproducible for everyone.",
+    "level": "proposed",
+    "since": "0.1.0",
+    "checks": [
+      {
+        "type": "file-exists",
+        "paths": [
+          ".claude/settings.json"
+        ]
+      }
+    ]
+  },
+  {
+    "id": "AI-008",
+    "title": "Repeated workflows are slash commands",
+    "rationale": "A written /tdd or /verify command is cheaper and safer than re-explaining the workflow.",
+    "level": "proposed",
+    "since": "0.1.0",
+    "checks": [
+      {
+        "type": "file-exists",
+        "paths": [
+          ".claude/commands"
+        ]
+      }
+    ]
+  }
+]

@@ -1,0 +1,7 @@
+{
+  "projects": [
+    { "name": "teamtodo", "path": "../teamtodo", "ecosystems": ["typescript", "react"], "topology": "local-only" },
+    { "name": "kontor", "path": "../kontor", "ecosystems": ["typescript", "react"], "topology": "local-only" },
+    { "name": "cracms", "path": "../cracms", "ecosystems": ["typescript", "react", "postgres"], "topology": "hosted-db" }
+  ]
+}

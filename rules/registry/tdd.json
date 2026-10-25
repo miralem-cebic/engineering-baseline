@@ -1,0 +1,69 @@
+[
+  {
+    "id": "TDD-001",
+    "title": "A test script exists",
+    "rationale": "The fastest feedback loop is the one every contributor and CI can run with one command.",
+    "level": "must",
+    "since": "0.1.0",
+    "ecosystems": [
+      "typescript"
+    ],
+    "checks": [
+      {
+        "type": "package-script",
+        "scripts": [
+          "test"
+        ]
+      }
+    ]
+  },
+  {
+    "id": "TDD-002",
+    "title": "Pure logic has property-based tests",
+    "rationale": "Example tests miss the inputs nobody thought of; properties find them (merge, parsing, migrations).",
+    "level": "proposed",
+    "since": "0.1.0",
+    "ecosystems": [
+      "typescript"
+    ],
+    "checks": [
+      {
+        "type": "package-dependency",
+        "names": [
+          "fast-check"
+        ]
+      }
+    ]
+  },
+  {
+    "id": "TDD-003",
+    "title": "The real build is tested end to end",
+    "rationale": "Unit tests do not catch what the bundler or the browser does to your code.",
+    "level": "should",
+    "since": "0.1.0",
+    "ecosystems": [
+      "react"
+    ],
+    "checks": [
+      {
+        "type": "package-dependency",
+        "names": [
+          "@playwright/test"
+        ]
+      }
+    ]
+  },
+  {
+    "id": "TDD-004",
+    "title": "Every bug fix starts with a failing test",
+    "rationale": "A test written after the fix proves nothing about the bug.",
+    "level": "should",
+    "since": "0.1.0",
+    "checks": [
+      {
+        "type": "manual"
+      }
+    ],
+    "hint": "Reproduce first, commit the red test, then fix."
+  }
+]

@@ -1,0 +1,5 @@
+# Add as a job in .github/workflows/ci.yml
+conformance:
+  uses: miralem-cebic/engineering-baseline/.github/workflows/conformance.yml@main
+  with:
+    strict: false

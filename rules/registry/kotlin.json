@@ -1,0 +1,92 @@
+[
+  {
+    "id": "KOT-001",
+    "title": "Kotlin warnings are errors",
+    "rationale": "allWarningsAsErrors turns style drift into a failing build.",
+    "level": "proposed",
+    "since": "0.1.0",
+    "ecosystems": [
+      "kotlin"
+    ],
+    "checks": [
+      {
+        "type": "file-contains",
+        "paths": [
+          "build.gradle.kts",
+          "build.gradle"
+        ],
+        "pattern": "allWarningsAsErrors"
+      }
+    ]
+  },
+  {
+    "id": "KOT-002",
+    "title": "Libraries use explicit API mode",
+    "rationale": "Public surface is a decision, not an accident.",
+    "level": "proposed",
+    "since": "0.1.0",
+    "ecosystems": [
+      "kotlin"
+    ],
+    "checks": [
+      {
+        "type": "file-contains",
+        "paths": [
+          "build.gradle.kts",
+          "build.gradle"
+        ],
+        "pattern": "explicitApi"
+      }
+    ]
+  },
+  {
+    "id": "KOT-003",
+    "title": "detekt runs with zero tolerance",
+    "rationale": "Static analysis catches null and coroutine mistakes early.",
+    "level": "proposed",
+    "since": "0.1.0",
+    "ecosystems": [
+      "kotlin"
+    ],
+    "checks": [
+      {
+        "type": "file-contains",
+        "paths": [
+          "build.gradle.kts",
+          "build.gradle"
+        ],
+        "pattern": "detekt"
+      }
+    ]
+  },
+  {
+    "id": "KOT-004",
+    "title": "!! is forbidden",
+    "rationale": "Same reasoning as non-null assertions in TypeScript.",
+    "level": "proposed",
+    "since": "0.1.0",
+    "ecosystems": [
+      "kotlin"
+    ],
+    "checks": [
+      {
+        "type": "manual"
+      }
+    ]
+  },
+  {
+    "id": "KOT-005",
+    "title": "AndroidX and Jetpack are preferred over third-party libraries",
+    "rationale": "First-party libraries track platform changes.",
+    "level": "proposed",
+    "since": "0.1.0",
+    "ecosystems": [
+      "kotlin"
+    ],
+    "checks": [
+      {
+        "type": "manual"
+      }
+    ]
+  }
+]

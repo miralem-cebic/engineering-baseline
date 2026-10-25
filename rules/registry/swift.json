@@ -1,0 +1,92 @@
+[
+  {
+    "id": "SWF-001",
+    "title": "Swift 6 language mode is on",
+    "rationale": "Data-race safety checked at compile time is the closest Swift gets to Rust's guarantees.",
+    "level": "proposed",
+    "since": "0.1.0",
+    "ecosystems": [
+      "swift"
+    ],
+    "checks": [
+      {
+        "type": "file-contains",
+        "paths": [
+          "Package.swift",
+          "project.yml"
+        ],
+        "pattern": "swift-tools-version:\\s*6|swiftLanguageModes|SWIFT_VERSION\\s*[:=]\\s*\"?6"
+      }
+    ]
+  },
+  {
+    "id": "SWF-002",
+    "title": "Warnings are errors",
+    "rationale": "Warnings that do not fail are ignored.",
+    "level": "proposed",
+    "since": "0.1.0",
+    "ecosystems": [
+      "swift"
+    ],
+    "checks": [
+      {
+        "type": "file-contains",
+        "paths": [
+          "Package.swift",
+          "project.yml",
+          "Directory.Build.xcconfig"
+        ],
+        "pattern": "unsafeFlags\\(\\[\"-warnings-as-errors\"|SWIFT_TREAT_WARNINGS_AS_ERRORS|treatAllWarnings"
+      }
+    ]
+  },
+  {
+    "id": "SWF-003",
+    "title": "SwiftLint forbids force unwrap, cast and try",
+    "rationale": "Each ! is a potential crash.",
+    "level": "proposed",
+    "since": "0.1.0",
+    "ecosystems": [
+      "swift"
+    ],
+    "checks": [
+      {
+        "type": "file-contains",
+        "paths": [
+          ".swiftlint.yml"
+        ],
+        "pattern": "force_unwrapping"
+      }
+    ]
+  },
+  {
+    "id": "SWF-004",
+    "title": "Tests use Swift Testing or XCTest and run in CI",
+    "rationale": "Test-first applies on every platform.",
+    "level": "proposed",
+    "since": "0.1.0",
+    "ecosystems": [
+      "swift"
+    ],
+    "checks": [
+      {
+        "type": "manual"
+      }
+    ]
+  },
+  {
+    "id": "SWF-005",
+    "title": "Apple frameworks are preferred over third-party packages",
+    "rationale": "Platform frameworks ship with the OS, are optimised for it and carry no extra supply chain.",
+    "level": "proposed",
+    "since": "0.1.0",
+    "ecosystems": [
+      "swift"
+    ],
+    "checks": [
+      {
+        "type": "manual"
+      }
+    ]
+  }
+]

@@ -1,0 +1,269 @@
+[
+  {
+    "id": "GEN-001",
+    "title": "Conventional Commits are enforced in CI",
+    "rationale": "A machine-readable history drives changelogs and release notes and makes review faster.",
+    "level": "should",
+    "since": "0.1.0",
+    "checks": [
+      {
+        "type": "file-contains",
+        "paths": [
+          ".github/workflows/ci.yml",
+          ".github/workflows/vite-ci.yml"
+        ],
+        "pattern": "conventional|commitlint|semantic-pull-request|action-semantic",
+        "flags": "i"
+      }
+    ],
+    "hint": "Add a PR-title or commit-message check to the CI workflow."
+  },
+  {
+    "id": "GEN-002",
+    "title": "CI runs on every pull request",
+    "rationale": "Nothing reaches main without the same gates that run locally.",
+    "level": "must",
+    "since": "0.1.0",
+    "checks": [
+      {
+        "type": "file-contains",
+        "paths": [
+          ".github/workflows/ci.yml",
+          ".github/workflows/vite-ci.yml"
+        ],
+        "pattern": "pull_request"
+      }
+    ],
+    "hint": "Trigger .github/workflows/ci.yml on pull_request."
+  },
+  {
+    "id": "GEN-003",
+    "title": "Dependency updates are automated",
+    "rationale": "Outdated dependencies are the most common route to known vulnerabilities.",
+    "level": "must",
+    "since": "0.1.0",
+    "checks": [
+      {
+        "type": "file-exists",
+        "paths": [
+          ".github/dependabot.yml",
+          ".github/dependabot.yaml",
+          ".github/renovate.json",
+          "renovate.json"
+        ]
+      }
+    ],
+    "hint": "Add .github/dependabot.yml with grouped weekly updates."
+  },
+  {
+    "id": "GEN-004",
+    "title": "SECURITY.md describes a real reporting path",
+    "rationale": "Reporters need a private channel; template text is a sign nobody looked.",
+    "level": "must",
+    "since": "0.1.0",
+    "checks": [
+      {
+        "type": "file-exists",
+        "paths": [
+          "SECURITY.md",
+          ".github/SECURITY.md"
+        ]
+      },
+      {
+        "type": "file-not-contains",
+        "paths": [
+          "SECURITY.md",
+          ".github/SECURITY.md"
+        ],
+        "pattern": "Use this section to tell people|\\[INSERT|your-email@example",
+        "flags": "i"
+      }
+    ],
+    "hint": "Name the contact, the supported versions and the response time."
+  },
+  {
+    "id": "GEN-005",
+    "title": "LICENSE is present",
+    "rationale": "Public code without a licence is not reusable; private code documents its terms.",
+    "level": "should",
+    "since": "0.1.0",
+    "checks": [
+      {
+        "type": "file-exists",
+        "paths": [
+          "LICENSE",
+          "LICENSE.md",
+          "LICENSE.txt"
+        ]
+      }
+    ]
+  },
+  {
+    "id": "GEN-006",
+    "title": "CHANGELOG keeps an Unreleased section",
+    "rationale": "User-visible changes are written when they happen, not reconstructed at release time.",
+    "level": "should",
+    "since": "0.1.0",
+    "checks": [
+      {
+        "type": "file-contains",
+        "paths": [
+          "CHANGELOG.md"
+        ],
+        "pattern": "^##\\s*\\[?Unreleased",
+        "flags": "mi"
+      }
+    ],
+    "hint": "Keep a changelog; put new entries under [Unreleased]."
+  },
+  {
+    "id": "GEN-007",
+    "title": ".editorconfig fixes whitespace and line endings",
+    "rationale": "Editors agree on indentation and newlines, so diffs show only real changes.",
+    "level": "should",
+    "since": "0.1.0",
+    "checks": [
+      {
+        "type": "file-exists",
+        "paths": [
+          ".editorconfig"
+        ]
+      }
+    ]
+  },
+  {
+    "id": "GEN-008",
+    "title": "CODEOWNERS names reviewers",
+    "rationale": "Every change has an accountable reviewer, also when an agent wrote it.",
+    "level": "should",
+    "since": "0.1.0",
+    "checks": [
+      {
+        "type": "file-exists",
+        "paths": [
+          ".github/CODEOWNERS",
+          "CODEOWNERS",
+          "docs/CODEOWNERS"
+        ]
+      }
+    ]
+  },
+  {
+    "id": "GEN-009",
+    "title": "Pull request template asks for the checklist",
+    "rationale": "The checklist makes the definition of done visible at the moment it matters.",
+    "level": "should",
+    "since": "0.1.0",
+    "checks": [
+      {
+        "type": "file-exists",
+        "paths": [
+          ".github/PULL_REQUEST_TEMPLATE.md",
+          ".github/pull_request_template.md"
+        ]
+      }
+    ]
+  },
+  {
+    "id": "GEN-010",
+    "title": "Architecture decisions are recorded",
+    "rationale": "Decisions without a recorded reason are re-litigated or silently reversed.",
+    "level": "should",
+    "since": "0.1.0",
+    "checks": [
+      {
+        "type": "file-exists",
+        "paths": [
+          "docs/adr",
+          "docs/decisions",
+          "docs/adrs"
+        ]
+      }
+    ],
+    "hint": "Create docs/adr/0001-record-architecture-decisions.md."
+  },
+  {
+    "id": "GEN-011",
+    "title": "Environment files are git-ignored",
+    "rationale": "Secrets in history cannot be un-leaked.",
+    "level": "must",
+    "since": "0.1.0",
+    "checks": [
+      {
+        "type": "file-contains",
+        "paths": [
+          ".gitignore"
+        ],
+        "pattern": "^\\.env",
+        "flags": "m"
+      }
+    ],
+    "hint": "Add .env* and !.env.example to .gitignore."
+  },
+  {
+    "id": "GEN-012",
+    "title": "Third-party dependencies are justified",
+    "rationale": "Every dependency is attack surface and upgrade work; a register states why it is worth it and what the native alternative was.",
+    "level": "proposed",
+    "since": "0.1.0",
+    "checks": [
+      {
+        "type": "file-exists",
+        "paths": [
+          "docs/dependencies.md"
+        ]
+      }
+    ],
+    "hint": "Add docs/dependencies.md: name, purpose, native alternative considered, owner."
+  },
+  {
+    "id": "GEN-013",
+    "title": "README gives a way in",
+    "rationale": "A project nobody can start is not a project.",
+    "level": "must",
+    "since": "0.1.0",
+    "checks": [
+      {
+        "type": "file-exists",
+        "paths": [
+          "README.md"
+        ]
+      }
+    ]
+  },
+  {
+    "id": "GEN-014",
+    "title": "A lockfile is committed",
+    "rationale": "Reproducible installs are the base of supply-chain control.",
+    "level": "must",
+    "since": "0.1.0",
+    "checks": [
+      {
+        "type": "file-exists",
+        "paths": [
+          "package-lock.json",
+          "pnpm-lock.yaml",
+          "yarn.lock",
+          "uv.lock",
+          "poetry.lock",
+          "Package.resolved",
+          "packages.lock.json",
+          "gradle.lockfile"
+        ]
+      }
+    ]
+  },
+  {
+    "id": "GEN-020",
+    "title": "Vendor and platform modules are preferred over third-party ones",
+    "rationale": "First-party and standard-library modules are maintained with the platform, audited more often and carry no extra supply chain.",
+    "level": "should",
+    "since": "0.1.0",
+    "checks": [
+      {
+        "type": "manual"
+      }
+    ],
+    "hint": "Before adding a dependency, check the platform first and note the result in the PR."
+  }
+]

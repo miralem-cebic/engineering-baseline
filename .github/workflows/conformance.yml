@@ -1,0 +1,45 @@
+name: Conformance
+
+# Reusable workflow: projects call it to check themselves against the baseline.
+#
+#   jobs:
+#     conformance:
+#       uses: miralem-cebic/engineering-baseline/.github/workflows/conformance.yml@main
+#       with:
+#         strict: false
+
+on:
+  workflow_call:
+    inputs:
+      strict:
+        description: Also fail on `should` rules
+        type: boolean
+        default: false
+      baseline-ref:
+        description: Branch, tag or commit of engineering-baseline to run
+        type: string
+        default: main
+
+permissions:
+  contents: read
+
+jobs:
+  check:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+      # ESLint rules are judged against the project's own resolved config, so its dependencies must exist.
+      - name: Install project dependencies
+        run: |
+          if [ -f package-lock.json ]; then npm ci --ignore-scripts; fi
+      - name: Run baseline check
+        env:
+          STRICT: ${{ inputs.strict }}
+          BASELINE_REF: ${{ inputs.baseline-ref }}
+        run: |
+          flags=""
+          if [ "$STRICT" = "true" ]; then flags="--strict"; fi
+          npx --yes "github:miralem-cebic/engineering-baseline#${BASELINE_REF}" check $flags

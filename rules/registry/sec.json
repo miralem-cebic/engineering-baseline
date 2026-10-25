@@ -1,0 +1,74 @@
+[
+  {
+    "id": "SEC-001",
+    "title": "Dependencies are audited in CI",
+    "rationale": "Known vulnerabilities in dependencies should fail a build, not a quarterly review.",
+    "level": "should",
+    "since": "0.1.0",
+    "checks": [
+      {
+        "type": "file-contains",
+        "paths": [
+          ".github/workflows/ci.yml",
+          ".github/workflows/vite-ci.yml",
+          ".github/workflows/build.yml",
+          ".github/workflows/release.yml"
+        ],
+        "pattern": "npm audit|audit-ci|osv-scanner|pip-audit|--vulnerable|pnpm audit",
+        "flags": "i"
+      }
+    ]
+  },
+  {
+    "id": "SEC-002",
+    "title": "An SBOM is generated for releases",
+    "rationale": "Customers and the EU Cyber Resilience Act expect a machine-readable bill of materials.",
+    "level": "proposed",
+    "since": "0.1.0",
+    "checks": [
+      {
+        "type": "file-contains",
+        "paths": [
+          ".github/workflows/build.yml",
+          ".github/workflows/release.yml",
+          ".github/workflows/ci.yml"
+        ],
+        "pattern": "sbom|cyclonedx|syft|spdx",
+        "flags": "i"
+      }
+    ]
+  },
+  {
+    "id": "SEC-003",
+    "title": "Workflows declare minimal permissions",
+    "rationale": "A compromised action should not get write access by default.",
+    "level": "should",
+    "since": "0.1.0",
+    "checks": [
+      {
+        "type": "file-contains",
+        "paths": [
+          ".github/workflows/ci.yml",
+          ".github/workflows/vite-ci.yml",
+          ".github/workflows/build.yml",
+          ".github/workflows/release.yml"
+        ],
+        "pattern": "^permissions:",
+        "flags": "m"
+      }
+    ],
+    "hint": "Set top-level permissions: contents: read and widen per job."
+  },
+  {
+    "id": "SEC-004",
+    "title": "Third-party actions are pinned to a commit",
+    "rationale": "Tags can move; a commit SHA cannot.",
+    "level": "proposed",
+    "since": "0.1.0",
+    "checks": [
+      {
+        "type": "manual"
+      }
+    ]
+  }
+]

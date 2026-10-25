@@ -1,0 +1,6 @@
+{
+  "baseline": "0.1.0",
+  "ecosystems": ["typescript"],
+  "topology": "local-only",
+  "waivers": []
+}

@@ -1,0 +1,177 @@
+[
+  {
+    "id": "HOS-001",
+    "title": "A Content-Security-Policy is served",
+    "rationale": "The strongest browser defence against injected script.",
+    "level": "must",
+    "since": "0.1.0",
+    "topologies": [
+      "hosted-no-db",
+      "hosted-db"
+    ],
+    "checks": [
+      {
+        "type": "file-contains",
+        "paths": [
+          "netlify.toml",
+          "public/_headers",
+          "vercel.json",
+          "staticwebapp.config.json"
+        ],
+        "pattern": "Content-Security-Policy",
+        "flags": "i"
+      }
+    ],
+    "hint": "Define the CSP in netlify.toml or the host's header config."
+  },
+  {
+    "id": "HOS-002",
+    "title": "HSTS is enabled",
+    "rationale": "Forces HTTPS and prevents downgrade attacks.",
+    "level": "should",
+    "since": "0.1.0",
+    "topologies": [
+      "hosted-no-db",
+      "hosted-db"
+    ],
+    "checks": [
+      {
+        "type": "file-contains",
+        "paths": [
+          "netlify.toml",
+          "public/_headers",
+          "vercel.json",
+          "staticwebapp.config.json"
+        ],
+        "pattern": "Strict-Transport-Security",
+        "flags": "i"
+      }
+    ]
+  },
+  {
+    "id": "HOS-003",
+    "title": "Framing and MIME sniffing are blocked",
+    "rationale": "Stops clickjacking and content-type confusion.",
+    "level": "should",
+    "since": "0.1.0",
+    "topologies": [
+      "hosted-no-db",
+      "hosted-db"
+    ],
+    "checks": [
+      {
+        "type": "file-contains",
+        "paths": [
+          "netlify.toml",
+          "public/_headers",
+          "vercel.json",
+          "staticwebapp.config.json"
+        ],
+        "pattern": "X-Content-Type-Options|frame-ancestors",
+        "flags": "i"
+      }
+    ]
+  },
+  {
+    "id": "HOS-004",
+    "title": "script-src has no unsafe-inline",
+    "rationale": "'unsafe-inline' in script-src voids the CSP against XSS.",
+    "level": "must",
+    "since": "0.1.0",
+    "topologies": [
+      "hosted-no-db",
+      "hosted-db"
+    ],
+    "checks": [
+      {
+        "type": "file-not-contains",
+        "paths": [
+          "netlify.toml",
+          "public/_headers",
+          "vercel.json",
+          "staticwebapp.config.json"
+        ],
+        "pattern": "script-src[^;\"]*'unsafe-inline'"
+      }
+    ]
+  },
+  {
+    "id": "HOS-005",
+    "title": "Required environment is documented",
+    "rationale": "A .env.example lists every variable without values.",
+    "level": "should",
+    "since": "0.1.0",
+    "topologies": [
+      "hosted-no-db",
+      "hosted-db"
+    ],
+    "checks": [
+      {
+        "type": "file-exists",
+        "paths": [
+          ".env.example"
+        ]
+      }
+    ]
+  },
+  {
+    "id": "HOS-006",
+    "title": "Hashed assets are cached immutably",
+    "rationale": "Fast repeat visits cost nothing and need no revalidation.",
+    "level": "should",
+    "since": "0.1.0",
+    "topologies": [
+      "hosted-no-db",
+      "hosted-db"
+    ],
+    "checks": [
+      {
+        "type": "file-contains",
+        "paths": [
+          "netlify.toml",
+          "public/_headers",
+          "vercel.json",
+          "staticwebapp.config.json"
+        ],
+        "pattern": "immutable",
+        "flags": "i"
+      }
+    ]
+  },
+  {
+    "id": "HOS-007",
+    "title": "No secret is exposed to the client bundle",
+    "rationale": "Anything prefixed VITE_ ends up in the browser.",
+    "level": "must",
+    "since": "0.1.0",
+    "topologies": [
+      "hosted-no-db",
+      "hosted-db"
+    ],
+    "checks": [
+      {
+        "type": "file-not-contains",
+        "paths": [
+          ".env.example"
+        ],
+        "pattern": "VITE_\\w*(SERVICE_ROLE|SECRET|PRIVATE)"
+      }
+    ]
+  },
+  {
+    "id": "HOS-008",
+    "title": "Every deploy can be rolled back",
+    "rationale": "Immutable deploys with one-click rollback turn incidents into minutes.",
+    "level": "proposed",
+    "since": "0.1.0",
+    "topologies": [
+      "hosted-no-db",
+      "hosted-db"
+    ],
+    "checks": [
+      {
+        "type": "manual"
+      }
+    ]
+  }
+]

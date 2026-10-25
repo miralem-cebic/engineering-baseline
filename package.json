@@ -1,0 +1,36 @@
+{
+  "name": "engineering-baseline",
+  "version": "0.1.0",
+  "description": "Shared quality rules, configs and conformance checks for software projects",
+  "license": "MIT",
+  "type": "module",
+  "bin": {
+    "baseline": "bin/baseline.js"
+  },
+  "files": [
+    "bin",
+    "src",
+    "rules",
+    "templates"
+  ],
+  "engines": {
+    "node": ">=22"
+  },
+  "scripts": {
+    "typecheck": "tsc --noEmit",
+    "lint": "eslint . --max-warnings 0",
+    "test": "node --test \"test/**/*.test.js\"",
+    "docs": "node bin/baseline.js docs --out rules/generated",
+    "docs:check": "node bin/baseline.js docs --out rules/generated --check",
+    "baseline:check": "node bin/baseline.js check",
+    "verify": "npm run typecheck && npm run lint && npm test && npm run docs:check && npm run baseline:check"
+  },
+  "devDependencies": {
+    "@eslint/js": "^10.0.1",
+    "@types/node": "^22.19.0",
+    "eslint": "^10.13.0",
+    "globals": "^17.13.0",
+    "typescript": "~6.0.3",
+    "typescript-eslint": "^8.71.2"
+  }
+}

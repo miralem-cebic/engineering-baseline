@@ -1,0 +1,183 @@
+[
+  {
+    "id": "LOC-001",
+    "title": "The built file works from file://",
+    "rationale": "Local-only means a double-click start: one script proves the bundle does not need a server.",
+    "level": "must",
+    "since": "0.1.0",
+    "ecosystems": [
+      "react"
+    ],
+    "topologies": [
+      "local-only"
+    ],
+    "checks": [
+      {
+        "type": "package-script",
+        "scripts": [
+          "check:file"
+        ]
+      }
+    ],
+    "hint": "Add scripts/check-file-protocol.mjs and an npm script check:file."
+  },
+  {
+    "id": "LOC-002",
+    "title": "CSP forbids all network connections",
+    "rationale": "connect-src 'none' makes \"your data never leaves your machine\" a property of the build, not a promise.",
+    "level": "must",
+    "since": "0.1.0",
+    "ecosystems": [
+      "react"
+    ],
+    "topologies": [
+      "local-only"
+    ],
+    "checks": [
+      {
+        "type": "file-contains",
+        "paths": [
+          "index.html",
+          "build/fileProtocol.ts",
+          "vite.config.ts"
+        ],
+        "pattern": "connect-src\\s+'none'"
+      }
+    ]
+  },
+  {
+    "id": "LOC-003",
+    "title": "Stored data carries a schema version",
+    "rationale": "Files outlive releases; without a version there is no safe migration.",
+    "level": "must",
+    "since": "0.1.0",
+    "ecosystems": [
+      "react"
+    ],
+    "topologies": [
+      "local-only"
+    ],
+    "checks": [
+      {
+        "type": "repo-contains",
+        "dirs": [
+          "src"
+        ],
+        "exts": [
+          ".ts",
+          ".tsx"
+        ],
+        "pattern": "SCHEMA_VERSION|schemaVersion"
+      }
+    ]
+  },
+  {
+    "id": "LOC-004",
+    "title": "The real build is tested with a browser",
+    "rationale": "file:// and bundling issues only show up in the built artefact.",
+    "level": "must",
+    "since": "0.1.0",
+    "ecosystems": [
+      "react"
+    ],
+    "topologies": [
+      "local-only"
+    ],
+    "checks": [
+      {
+        "type": "package-dependency",
+        "names": [
+          "@playwright/test"
+        ]
+      },
+      {
+        "type": "package-script",
+        "scripts": [
+          "test:e2e"
+        ]
+      }
+    ]
+  },
+  {
+    "id": "LOC-005",
+    "title": "Deletes are soft",
+    "rationale": "Tombstones keep sync and undo possible; hard purge happens after a grace period.",
+    "level": "should",
+    "since": "0.1.0",
+    "ecosystems": [
+      "react"
+    ],
+    "topologies": [
+      "local-only"
+    ],
+    "checks": [
+      {
+        "type": "repo-contains",
+        "dirs": [
+          "src"
+        ],
+        "exts": [
+          ".ts",
+          ".tsx"
+        ],
+        "pattern": "deletedAt"
+      }
+    ]
+  },
+  {
+    "id": "LOC-006",
+    "title": "Browser file APIs live in one module",
+    "rationale": "A single adapter keeps the domain testable and the platform risk contained.",
+    "level": "should",
+    "since": "0.1.0",
+    "ecosystems": [
+      "react"
+    ],
+    "topologies": [
+      "local-only"
+    ],
+    "checks": [
+      {
+        "type": "manual"
+      }
+    ],
+    "hint": "Only src/data/fs may import the File System Access API."
+  },
+  {
+    "id": "LOC-007",
+    "title": "Writes survive crashes",
+    "rationale": "Debounced persistence needs an emergency copy so a crash loses seconds, not hours.",
+    "level": "should",
+    "since": "0.1.0",
+    "ecosystems": [
+      "react"
+    ],
+    "topologies": [
+      "local-only"
+    ],
+    "checks": [
+      {
+        "type": "manual"
+      }
+    ]
+  },
+  {
+    "id": "LOC-008",
+    "title": "No network access in the code",
+    "rationale": "Complements the CSP: the code itself must not try.",
+    "level": "must",
+    "since": "0.1.0",
+    "ecosystems": [
+      "react"
+    ],
+    "topologies": [
+      "local-only"
+    ],
+    "checks": [
+      {
+        "type": "manual"
+      }
+    ],
+    "hint": "Review: no fetch, XMLHttpRequest, WebSocket or sendBeacon."
+  }
+]

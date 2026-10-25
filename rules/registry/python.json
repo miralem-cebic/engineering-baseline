@@ -1,0 +1,98 @@
+[
+  {
+    "id": "PY-001",
+    "title": "The type checker runs in strict mode",
+    "rationale": "Typed Python catches the errors a compiled language would.",
+    "level": "proposed",
+    "since": "0.1.0",
+    "ecosystems": [
+      "python"
+    ],
+    "checks": [
+      {
+        "type": "file-contains",
+        "paths": [
+          "pyproject.toml",
+          "mypy.ini",
+          "pyrightconfig.json"
+        ],
+        "pattern": "strict"
+      }
+    ]
+  },
+  {
+    "id": "PY-002",
+    "title": "Ruff is configured",
+    "rationale": "One fast tool for lint and format removes style debates.",
+    "level": "proposed",
+    "since": "0.1.0",
+    "ecosystems": [
+      "python"
+    ],
+    "checks": [
+      {
+        "type": "file-contains",
+        "paths": [
+          "pyproject.toml",
+          "ruff.toml"
+        ],
+        "pattern": "\\[tool\\.ruff|^select",
+        "flags": "m"
+      }
+    ]
+  },
+  {
+    "id": "PY-003",
+    "title": "Warnings fail the tests",
+    "rationale": "filterwarnings = error surfaces deprecations before they break.",
+    "level": "proposed",
+    "since": "0.1.0",
+    "ecosystems": [
+      "python"
+    ],
+    "checks": [
+      {
+        "type": "file-contains",
+        "paths": [
+          "pyproject.toml",
+          "pytest.ini"
+        ],
+        "pattern": "filterwarnings"
+      }
+    ]
+  },
+  {
+    "id": "PY-004",
+    "title": "The Python version is declared",
+    "rationale": "requires-python makes the supported interpreter explicit.",
+    "level": "proposed",
+    "since": "0.1.0",
+    "ecosystems": [
+      "python"
+    ],
+    "checks": [
+      {
+        "type": "file-contains",
+        "paths": [
+          "pyproject.toml"
+        ],
+        "pattern": "requires-python"
+      }
+    ]
+  },
+  {
+    "id": "PY-005",
+    "title": "The standard library is preferred over third-party packages",
+    "rationale": "pathlib, dataclasses, tomllib, argparse and asyncio cover a lot without new supply chain.",
+    "level": "proposed",
+    "since": "0.1.0",
+    "ecosystems": [
+      "python"
+    ],
+    "checks": [
+      {
+        "type": "manual"
+      }
+    ]
+  }
+]
