@@ -5,6 +5,8 @@ export const ECOSYSTEMS = /** @type {const} */ (['typescript', 'react', 'postgre
 export const TOPOLOGIES = /** @type {const} */ (['local-only', 'hosted-no-db', 'hosted-db']);
 
 const DATE = /^\d{4}-\d{2}-\d{2}$/;
+// Strict on purpose: the value ends up in an API URL path.
+const REPO = /^[A-Za-z0-9_.-]+\/[A-Za-z0-9_.-]+$/;
 
 /**
  * @param {unknown} value
@@ -40,7 +42,7 @@ export function parseConfig(text) {
 export function validateConfig(raw) {
   if (!isRecord(raw)) return { ok: false, error: 'baseline.json must be an object' };
 
-  const { baseline, ecosystems, topology, waivers } = raw;
+  const { baseline, ecosystems, topology, waivers, repo } = raw;
   if (!isNonEmptyString(baseline)) return { ok: false, error: 'baseline (version) is required' };
 
   if (!Array.isArray(ecosystems) || ecosystems.length === 0) {
@@ -72,9 +74,19 @@ export function validateConfig(raw) {
     }
   }
 
+  if (repo !== undefined && (typeof repo !== 'string' || !REPO.test(repo))) {
+    return { ok: false, error: 'repo must be "owner/name"' };
+  }
+
   return {
     ok: true,
-    value: { baseline, ecosystems: knownEcosystems, topology: knownTopology, waivers: knownWaivers },
+    value: {
+      baseline,
+      ecosystems: knownEcosystems,
+      topology: knownTopology,
+      waivers: knownWaivers,
+      ...(repo === undefined ? {} : { repo }),
+    },
   };
 }
 

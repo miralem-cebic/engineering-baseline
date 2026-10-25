@@ -1,6 +1,9 @@
 {
   "baseline": "0.1.0",
-  "ecosystems": ["typescript"],
+  "ecosystems": [
+    "typescript"
+  ],
   "topology": "local-only",
-  "waivers": []
+  "waivers": [],
+  "repo": "miralem-cebic/engineering-baseline"
 }

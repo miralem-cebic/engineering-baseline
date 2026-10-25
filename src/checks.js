@@ -22,8 +22,13 @@ function getPath(value, dotted) {
   /** @type {unknown} */
   let current = value;
   for (const key of dotted.split('.')) {
-    if (!isRecord(current)) return undefined;
-    current = current[key];
+    if (Array.isArray(current)) {
+      current = /^\d+$/.test(key) ? current[Number(key)] : undefined;
+    } else if (isRecord(current)) {
+      current = current[key];
+    } else {
+      return undefined;
+    }
   }
   return current;
 }
@@ -288,6 +293,16 @@ export async function runCheck(check, ctx) {
       if (text === null) return skip(`${check.path} not found`);
       const lines = text.endsWith('\n') ? text.split('\n').length - 1 : text.split('\n').length;
       return lines <= check.max ? pass(`${lines} lines`) : fail(`${check.path} has ${lines} lines, max ${check.max}`);
+    }
+
+    case 'repo-setting': {
+      if (ctx.github === undefined) return skip('no GitHub access: set "repo" in baseline.json and provide GITHUB_TOKEN');
+      const live = await ctx.github.getSettings();
+      if (!live.ok) return skip(`GitHub settings not available: ${live.error}`);
+      const actual = getPath(live.value, check.path);
+      return matches(actual, check.expected)
+        ? pass(`${check.path} ok`)
+        : fail(`${check.path} is ${actual === undefined ? 'absent' : JSON.stringify(actual)}, expected ${JSON.stringify(check.expected)}`);
     }
 
     case 'repo-contains': {

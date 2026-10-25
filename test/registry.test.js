@@ -67,6 +67,7 @@ describe('parseRule', () => {
       { type: 'sql-tables-have-rls', dirs: ['supabase/patches'] },
       { type: 'eslint-rule', rule: '@typescript-eslint/no-explicit-any' },
       { type: 'max-lines', path: 'CLAUDE.md', max: 250 },
+      { type: 'repo-setting', path: 'allowSquashMerge', expected: true },
       { type: 'repo-contains', dirs: ['src'], exts: ['.ts'], pattern: 'x' },
     ];
     assert.equal(parseRule({ ...base, checks }).ok, true);

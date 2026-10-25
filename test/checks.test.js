@@ -259,3 +259,42 @@ describe('repo-contains', () => {
     assert.equal((await runCheck(check, ctx({ 'src/x.ts': 'nope', 'src/y.md': 'ErrorBoundary' }))).status, 'fail');
   });
 });
+
+describe('repo-setting', () => {
+  /** @param {Record<string, unknown> | null} settings */
+  const withGithub = (settings) => ({
+    ...ctx({}),
+    github: {
+      getSettings: () =>
+        Promise.resolve(
+          settings === null
+            ? { ok: /** @type {const} */ (false), error: 'no token' }
+            : { ok: /** @type {const} */ (true), value: settings },
+        ),
+    },
+  });
+  const squash = chk({ type: 'repo-setting', path: 'allowSquashMerge', expected: true });
+
+  it('compares a live setting', async () => {
+    assert.equal((await runCheck(squash, withGithub({ allowSquashMerge: true }))).status, 'pass');
+    const result = await runCheck(squash, withGithub({ allowSquashMerge: false }));
+    assert.equal(result.status, 'fail');
+    assert.match(result.detail, /allowSquashMerge/);
+  });
+
+  it('reads nested values and list items', async () => {
+    const settings = { branchProtection: { enabled: true, requiredChecks: ['verify'] } };
+    const nested = chk({ type: 'repo-setting', path: 'branchProtection.enabled', expected: true });
+    const listed = chk({ type: 'repo-setting', path: 'branchProtection.requiredChecks.0', expected: { exists: true } });
+    assert.equal((await runCheck(nested, withGithub(settings))).status, 'pass');
+    assert.equal((await runCheck(listed, withGithub(settings))).status, 'pass');
+    assert.equal((await runCheck(listed, withGithub({ branchProtection: { requiredChecks: [] } }))).status, 'fail');
+  });
+
+  it('skips when there is no GitHub access, instead of guessing', async () => {
+    assert.equal((await runCheck(squash, ctx({}))).status, 'skip');
+    const denied = await runCheck(squash, withGithub(null));
+    assert.equal(denied.status, 'skip');
+    assert.match(denied.detail, /no token/);
+  });
+});

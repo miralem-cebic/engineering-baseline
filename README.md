@@ -55,7 +55,7 @@ cracms: [docs/conformance.md](docs/conformance.md).
 ## Rules
 
 Generated documentation: [rules/generated/README.md](rules/generated/README.md). Decisions: [docs/adr](docs/adr).
-Local-first to SaaS: [docs/saas-modularity.md](docs/saas-modularity.md). Claude Code workflow:
+Repository and pipeline setup: [docs/repo-setup.md](docs/repo-setup.md). Local-first to SaaS: [docs/saas-modularity.md](docs/saas-modularity.md). Claude Code workflow:
 [docs/claude-code.md](docs/claude-code.md).
 
 ## Develop

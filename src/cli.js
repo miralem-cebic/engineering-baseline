@@ -22,12 +22,28 @@ const REGISTRY_DIR = 'rules/registry';
  * @property {import('./types.js').Fs} registryFs file system that holds this package (rules/registry)
  * @property {(root: string) => import('./types.js').Fs} createFs
  * @property {(root: string) => import('./types.js').EslintPort} createEslint
+ * @property {(repo: string) => import('./types.js').GithubPort} createGithub
  * @property {(path: string) => Promise<string | null>} readFile
  * @property {(path: string, text: string) => Promise<void>} writeFile
  * @property {Date} now
  * @property {(text: string) => void} stdout
  * @property {(text: string) => void} stderr
  */
+
+/**
+ * @param {CliDeps} deps
+ * @param {string} root
+ * @param {string | undefined} repo
+ * @returns {import('./types.js').Context}
+ */
+function contextFor(deps, root, repo) {
+  return {
+    fs: deps.createFs(root),
+    eslint: deps.createEslint(root),
+    now: deps.now,
+    ...(repo === undefined ? {} : { github: deps.createGithub(repo) }),
+  };
+}
 
 /**
  * @param {readonly string[]} argv
@@ -94,8 +110,7 @@ export async function main(argv, deps) {
     if (!fleet.ok) return fail(`${fleetFile}: ${fleet.error}`);
     const base = dirname(fleetFile);
     const results = await runFleet(registry.value, fleet.value, (project) => {
-      const root = join(base, project.path);
-      return { fs: deps.createFs(root), eslint: deps.createEslint(root), now: deps.now };
+      return contextFor(deps, join(base, project.path), project.config.repo);
     });
     deps.stdout(formatMatrix(results));
     return 0;
@@ -109,9 +124,8 @@ export async function main(argv, deps) {
 
   const selected = selectRules(registry.value, config.value);
   const results = await runRules(selected, config.value.waivers, {
+    ...contextFor(deps, values.root, config.value.repo),
     fs,
-    eslint: deps.createEslint(values.root),
-    now: deps.now,
   });
 
   if (values.json) {

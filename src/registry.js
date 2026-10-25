@@ -107,6 +107,13 @@ export function parseCheck(value) {
         ? { ok: true, value: { type, path, max } }
         : missing('max');
     }
+    case 'repo-setting': {
+      const path = value['path'];
+      const expected = value['expected'];
+      if (!isNonEmptyString(path)) return missing('path');
+      if (expected === undefined || !isJsonValue(expected)) return missing('expected');
+      return { ok: true, value: { type, path, expected } };
+    }
     case 'repo-contains': {
       const dirs = stringList(value, 'dirs');
       const exts = stringList(value, 'exts');

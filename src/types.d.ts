@@ -40,6 +40,7 @@ export type Check =
   | { readonly type: 'sql-tables-have-rls'; readonly dirs: readonly string[] }
   | { readonly type: 'eslint-rule'; readonly rule: string }
   | { readonly type: 'max-lines'; readonly path: string; readonly max: number }
+  | { readonly type: 'repo-setting'; readonly path: string; readonly expected: Expected }
   | {
       readonly type: 'repo-contains';
       readonly dirs: readonly string[];
@@ -86,9 +87,16 @@ export interface EslintPort {
   printConfig(sampleFile: string): Promise<Result<Record<string, unknown>>>;
 }
 
+export interface GithubPort {
+  /** Live repository settings in the normalized shape of `normalizeSettings`. */
+  getSettings(): Promise<Result<Record<string, unknown>>>;
+}
+
 export interface Context {
   readonly fs: Fs;
   readonly eslint: EslintPort;
+  /** Absent when the project names no repo or no token is available; repo-setting checks then skip. */
+  readonly github?: GithubPort;
   readonly now: Date;
 }
 
@@ -102,5 +110,7 @@ export interface ProjectConfig {
   readonly baseline: string;
   readonly ecosystems: readonly Ecosystem[];
   readonly topology: Topology;
+  /** `owner/name` on GitHub; enables the repo-setting checks. */
+  readonly repo?: string;
   readonly waivers: readonly Waiver[];
 }

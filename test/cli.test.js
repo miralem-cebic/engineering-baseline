@@ -35,9 +35,19 @@ function harness({ project = {}, others = {}, existing = {} } = {}) {
   const err = [];
   /** @type {Record<string, string>} */
   const written = {};
+  /** @type {string[]} */
+  const githubRepos = [];
+  /** @type {import('../src/types.js').GithubPort | undefined} */
+  const github = {
+    getSettings: () => Promise.resolve({ ok: /** @type {const} */ (true), value: { allowSquashMerge: true } }),
+  };
   const deps = {
     registryFs: createMemoryFs({ 'rules/registry/general.json': registry }),
     createFs: (/** @type {string} */ root) => createMemoryFs(root === '.' ? project : (others[root] ?? {})),
+    createGithub: (/** @type {string} */ repo) => {
+      githubRepos.push(repo);
+      return github;
+    },
     createEslint: () => ({ printConfig: () => Promise.resolve({ ok: /** @type {const} */ (false), error: 'n/a' }) }),
     readFile: (/** @type {string} */ path) => Promise.resolve(existing[path] ?? written[path] ?? null),
     writeFile: (/** @type {string} */ path, /** @type {string} */ text) => {
@@ -48,7 +58,7 @@ function harness({ project = {}, others = {}, existing = {} } = {}) {
     stdout: (/** @type {string} */ text) => out.push(text),
     stderr: (/** @type {string} */ text) => err.push(text),
   };
-  return { deps, out, err, written };
+  return { deps, out, err, written, githubRepos };
 }
 
 describe('check', () => {
@@ -88,6 +98,36 @@ describe('check', () => {
     const { deps, err } = harness({ project: { 'baseline.json': '{"baseline":"0.1.0"}' } });
     assert.equal(await main(['check'], deps), 2);
     assert.match(err.join('\n'), /ecosystems/);
+  });
+});
+
+describe('repo settings', () => {
+  const settingRule = JSON.stringify([
+    {
+      id: 'REPO-001',
+      title: 'Squash only',
+      rationale: 'Linear history, one commit per PR.',
+      level: 'must',
+      since: '0.1.0',
+      checks: [{ type: 'repo-setting', path: 'allowSquashMerge', expected: true }],
+    },
+  ]);
+  const withRepo = JSON.stringify({ baseline: '0.1.0', ecosystems: ['typescript'], topology: 'local-only', repo: 'o/r' });
+
+  it('queries GitHub for the repo named in baseline.json', async () => {
+    const { deps, githubRepos, out } = harness({ project: { 'baseline.json': withRepo } });
+    deps.registryFs = createMemoryFs({ 'rules/registry/repo.json': settingRule });
+    assert.equal(await main(['check'], deps), 0);
+    assert.deepEqual(githubRepos, ['o/r']);
+    assert.match(out.join('\n'), /1 pass/);
+  });
+
+  it('does not ask GitHub when baseline.json names no repo', async () => {
+    const { deps, githubRepos, out } = harness({ project: { 'baseline.json': config } });
+    deps.registryFs = createMemoryFs({ 'rules/registry/repo.json': settingRule });
+    assert.equal(await main(['check'], deps), 0);
+    assert.deepEqual(githubRepos, []);
+    assert.match(out.join('\n'), /1 skip/);
   });
 });
 

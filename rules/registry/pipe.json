@@ -1,0 +1,111 @@
+[
+  {
+    "id": "PIPE-001",
+    "title": "The build is a reusable workflow",
+    "rationale": "CI and release must build the same way; one reusable workflow guarantees it.",
+    "level": "should",
+    "since": "0.1.0",
+    "ecosystems": [
+      "react"
+    ],
+    "checks": [
+      {
+        "type": "file-contains",
+        "paths": [
+          ".github/workflows/build.yml"
+        ],
+        "pattern": "workflow_call"
+      }
+    ],
+    "hint": "Move build steps into build.yml with on: workflow_call and call it from ci.yml and release.yml."
+  },
+  {
+    "id": "PIPE-002",
+    "title": "Releases are cut from version tags",
+    "rationale": "A tag is an immutable, reviewable release trigger; no manual uploads.",
+    "level": "should",
+    "since": "0.1.0",
+    "checks": [
+      {
+        "type": "file-contains",
+        "paths": [
+          ".github/workflows/release.yml"
+        ],
+        "pattern": "tags:"
+      }
+    ],
+    "hint": "Trigger release.yml on push of tags v*."
+  },
+  {
+    "id": "PIPE-003",
+    "title": "Release notes are generated from merged PRs",
+    "rationale": "With Conventional Commit titles the notes write themselves.",
+    "level": "should",
+    "since": "0.1.0",
+    "checks": [
+      {
+        "type": "file-exists",
+        "paths": [
+          ".github/release.yml"
+        ]
+      }
+    ],
+    "hint": "Add .github/release.yml with changelog categories."
+  },
+  {
+    "id": "PIPE-004",
+    "title": "Superseded CI runs are cancelled",
+    "rationale": "Saves minutes and keeps the latest result the only one that matters.",
+    "level": "should",
+    "since": "0.1.0",
+    "checks": [
+      {
+        "type": "file-contains",
+        "paths": [
+          ".github/workflows/ci.yml",
+          ".github/workflows/vite-ci.yml"
+        ],
+        "pattern": "^concurrency:",
+        "flags": "m"
+      }
+    ]
+  },
+  {
+    "id": "PIPE-005",
+    "title": "End-to-end tests run against the built artefact in the pipeline",
+    "rationale": "Bundling and runtime issues only show in the real build.",
+    "level": "should",
+    "since": "0.1.0",
+    "ecosystems": [
+      "react"
+    ],
+    "checks": [
+      {
+        "type": "file-contains",
+        "paths": [
+          ".github/workflows/ci.yml",
+          ".github/workflows/vite-ci.yml",
+          ".github/workflows/build.yml"
+        ],
+        "pattern": "test:e2e|playwright",
+        "flags": "i"
+      }
+    ]
+  },
+  {
+    "id": "PIPE-006",
+    "title": "Hosted projects get a preview deploy per pull request",
+    "rationale": "Reviewers should see the change running, not imagine it.",
+    "level": "proposed",
+    "since": "0.1.0",
+    "topologies": [
+      "hosted-no-db",
+      "hosted-db"
+    ],
+    "checks": [
+      {
+        "type": "manual"
+      }
+    ]
+  }
+]

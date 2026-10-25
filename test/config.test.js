@@ -53,6 +53,26 @@ describe('parseConfig', () => {
   });
 });
 
+describe('repo field', () => {
+  it('accepts owner/name', () => {
+    const result = parseConfig(JSON.stringify({ ...valid, repo: 'miralem-cebic/teamtodo' }));
+    assert.equal(result.ok, true);
+    assert.equal(result.value.repo, 'miralem-cebic/teamtodo');
+  });
+
+  it('is optional', () => {
+    const result = parseConfig(JSON.stringify(valid));
+    assert.equal(result.ok, true);
+    assert.equal(result.value.repo, undefined);
+  });
+
+  it('rejects anything that is not owner/name', () => {
+    assert.equal(parseConfig(JSON.stringify({ ...valid, repo: 'teamtodo' })).ok, false);
+    assert.equal(parseConfig(JSON.stringify({ ...valid, repo: 'a/b/c' })).ok, false);
+    assert.equal(parseConfig(JSON.stringify({ ...valid, repo: 'a/b?x=1' })).ok, false);
+  });
+});
+
 describe('activeWaiver', () => {
   const waivers = [{ rule: 'TS-010', reason: 'r', expires: '2027-01-31' }];
 

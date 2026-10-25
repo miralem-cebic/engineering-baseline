@@ -34,4 +34,6 @@ A compromised action should not get write access by default.
 
 Tags can move; a commit SHA cannot.
 
-**Verified by:** `manual`
+**Verified by:** `file-not-contains`
+
+**How to fix:** Pin with the full commit SHA and keep the tag in a comment; Dependabot updates both.

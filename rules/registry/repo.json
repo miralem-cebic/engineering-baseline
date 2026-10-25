@@ -1,0 +1,162 @@
+[
+  {
+    "id": "REPO-001",
+    "title": "Only squash merges are allowed",
+    "rationale": "One commit per pull request keeps history linear and the changelog readable.",
+    "level": "proposed",
+    "since": "0.1.0",
+    "checks": [
+      {
+        "type": "repo-setting",
+        "path": "allowSquashMerge",
+        "expected": true
+      },
+      {
+        "type": "repo-setting",
+        "path": "allowMergeCommit",
+        "expected": false
+      },
+      {
+        "type": "repo-setting",
+        "path": "allowRebaseMerge",
+        "expected": false
+      }
+    ],
+    "hint": "Settings > General > Pull Requests: allow squash merging only."
+  },
+  {
+    "id": "REPO-002",
+    "title": "Merged branches are deleted automatically",
+    "rationale": "Stale branches hide what is in flight.",
+    "level": "proposed",
+    "since": "0.1.0",
+    "checks": [
+      {
+        "type": "repo-setting",
+        "path": "deleteBranchOnMerge",
+        "expected": true
+      }
+    ]
+  },
+  {
+    "id": "REPO-003",
+    "title": "The default branch is protected from force pushes and deletion",
+    "rationale": "History on main must not be rewritable.",
+    "level": "proposed",
+    "since": "0.1.0",
+    "checks": [
+      {
+        "type": "repo-setting",
+        "path": "branchProtection.enabled",
+        "expected": true
+      },
+      {
+        "type": "repo-setting",
+        "path": "branchProtection.allowForcePushes",
+        "expected": false
+      },
+      {
+        "type": "repo-setting",
+        "path": "branchProtection.allowDeletions",
+        "expected": false
+      }
+    ],
+    "hint": "Protect the default branch; see docs/repo-setup.md."
+  },
+  {
+    "id": "REPO-004",
+    "title": "Changes reach main through pull requests with required checks",
+    "rationale": "The CI gates only matter if merging without them is impossible.",
+    "level": "proposed",
+    "since": "0.1.0",
+    "checks": [
+      {
+        "type": "repo-setting",
+        "path": "branchProtection.pullRequestRequired",
+        "expected": true
+      },
+      {
+        "type": "repo-setting",
+        "path": "branchProtection.requiredChecks.0",
+        "expected": {
+          "exists": true
+        }
+      }
+    ]
+  },
+  {
+    "id": "REPO-005",
+    "title": "Branches must be up to date before merging",
+    "rationale": "A green check on a stale branch says nothing about the merged result.",
+    "level": "proposed",
+    "since": "0.1.0",
+    "checks": [
+      {
+        "type": "repo-setting",
+        "path": "branchProtection.upToDate",
+        "expected": true
+      }
+    ]
+  },
+  {
+    "id": "REPO-006",
+    "title": "Secret scanning with push protection is on",
+    "rationale": "A secret that never gets pushed never has to be rotated.",
+    "level": "proposed",
+    "since": "0.1.0",
+    "checks": [
+      {
+        "type": "repo-setting",
+        "path": "secretScanning",
+        "expected": true
+      },
+      {
+        "type": "repo-setting",
+        "path": "pushProtection",
+        "expected": true
+      }
+    ]
+  },
+  {
+    "id": "REPO-007",
+    "title": "Dependabot alerts are enabled",
+    "rationale": "Known-vulnerable dependencies should reach you before an audit does.",
+    "level": "proposed",
+    "since": "0.1.0",
+    "checks": [
+      {
+        "type": "repo-setting",
+        "path": "vulnerabilityAlerts",
+        "expected": true
+      }
+    ]
+  },
+  {
+    "id": "REPO-008",
+    "title": "The default workflow token is read-only",
+    "rationale": "Workflows should get write rights only where a job asks for them.",
+    "level": "proposed",
+    "since": "0.1.0",
+    "checks": [
+      {
+        "type": "repo-setting",
+        "path": "workflowPermissions",
+        "expected": "read"
+      }
+    ]
+  },
+  {
+    "id": "REPO-009",
+    "title": "Administrators follow the branch rules",
+    "rationale": "Rules with an admin bypass are suggestions. Solo maintainers may waive this one.",
+    "level": "proposed",
+    "since": "0.1.0",
+    "checks": [
+      {
+        "type": "repo-setting",
+        "path": "branchProtection.enforceAdmins",
+        "expected": true
+      }
+    ]
+  }
+]

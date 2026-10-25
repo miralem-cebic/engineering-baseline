@@ -1,6 +1,6 @@
 # Conformance snapshot
 
-Measured on 2026-10-25 with baseline 0.1.0 (`baseline fleet`). Profiles: teamtodo and kontor are
+Measured on 2026-10-25 with baseline 0.1.0 (115 rules) (`baseline fleet`). Profiles: teamtodo and kontor are
 `typescript + react / local-only`; cracms is `typescript + react + postgres / hosted-db`.
 ✅ pass · ❌ fail · 👁 needs human review · ⏭ skipped (not measurable) · – rule does not apply to the profile.
 
@@ -28,6 +28,8 @@ Each item was verified against the project's files; the first two columns are fa
 
 `policy_type_config` may be intentionally global; RLS should still be on (read-only policy). Treat DB-003 as a
 review item, not a verdict.
+
+Repository settings (`REPO-*`) are skipped here: they need a token with read access to each repo.
 
 ## Matrix
 
@@ -79,15 +81,30 @@ review item, not a verdict.
 | LOC-006 | should | Browser file APIs live in one module | 👁 | 👁 | – |
 | LOC-007 | should | Writes survive crashes | 👁 | 👁 | – |
 | LOC-008 | must | No network access in the code | 👁 | 👁 | – |
+| PIPE-001 | should | The build is a reusable workflow | ✅ | ✅ | ❌ |
+| PIPE-002 | should | Releases are cut from version tags | ✅ | ✅ | ❌ |
+| PIPE-003 | should | Release notes are generated from merged PRs | ✅ | ✅ | ❌ |
+| PIPE-004 | should | Superseded CI runs are cancelled | ✅ | ✅ | ❌ |
+| PIPE-005 | should | End-to-end tests run against the built artefact in the pipeline | ❌ | ✅ | ❌ |
+| PIPE-006 | proposed | Hosted projects get a preview deploy per pull request | – | – | 👁 |
 | REL-001 | must | The UI has an error boundary | ✅ | ✅ | ❌ |
 | REL-002 | should | Routes and heavy views are lazy-loaded | – | – | ✅ |
 | REL-003 | must | React hooks rules are linted | ✅ | ✅ | ✅ |
 | REL-004 | should | React is on the current major | ✅ | ❌ | ✅ |
 | REL-005 | proposed | Performance budgets are checked | 👁 | 👁 | 👁 |
+| REPO-001 | proposed | Only squash merges are allowed | ⏭ | ⏭ | ⏭ |
+| REPO-002 | proposed | Merged branches are deleted automatically | ⏭ | ⏭ | ⏭ |
+| REPO-003 | proposed | The default branch is protected from force pushes and deletion | ⏭ | ⏭ | ⏭ |
+| REPO-004 | proposed | Changes reach main through pull requests with required checks | ⏭ | ⏭ | ⏭ |
+| REPO-005 | proposed | Branches must be up to date before merging | ⏭ | ⏭ | ⏭ |
+| REPO-006 | proposed | Secret scanning with push protection is on | ⏭ | ⏭ | ⏭ |
+| REPO-007 | proposed | Dependabot alerts are enabled | ⏭ | ⏭ | ⏭ |
+| REPO-008 | proposed | The default workflow token is read-only | ⏭ | ⏭ | ⏭ |
+| REPO-009 | proposed | Administrators follow the branch rules | ⏭ | ⏭ | ⏭ |
 | SEC-001 | should | Dependencies are audited in CI | ✅ | ✅ | ❌ |
 | SEC-002 | proposed | An SBOM is generated for releases | ❌ | ❌ | ❌ |
 | SEC-003 | should | Workflows declare minimal permissions | ✅ | ✅ | ❌ |
-| SEC-004 | proposed | Third-party actions are pinned to a commit | 👁 | 👁 | 👁 |
+| SEC-004 | proposed | Third-party actions are pinned to a commit | ❌ | ❌ | ❌ |
 | TDD-001 | must | A test script exists | ✅ | ✅ | ✅ |
 | TDD-002 | proposed | Pure logic has property-based tests | ✅ | ✅ | ❌ |
 | TDD-003 | should | The real build is tested end to end | ✅ | ✅ | ❌ |

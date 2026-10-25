@@ -67,8 +67,17 @@
     "since": "0.1.0",
     "checks": [
       {
-        "type": "manual"
+        "type": "file-not-contains",
+        "paths": [
+          ".github/workflows/ci.yml",
+          ".github/workflows/vite-ci.yml",
+          ".github/workflows/build.yml",
+          ".github/workflows/release.yml",
+          ".github/workflows/conformance.yml"
+        ],
+        "pattern": "uses:\\s*[\\w.-]+/[\\w./-]+@(?![0-9a-f]{40}\\b)"
       }
-    ]
+    ],
+    "hint": "Pin with the full commit SHA and keep the tag in a comment; Dependabot updates both."
   }
 ]
