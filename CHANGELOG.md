@@ -20,4 +20,5 @@ All notable changes are listed here. The format follows
 - Pipeline rules `PIPE-001..006`, a real `SEC-004` check for pinned actions, `release.yml` and
   `templates/scripts/apply-repo-settings.sh`.
 - Dependabot ignores TypeScript 7 (breaks `typescript-eslint` peer range) and `@types/node` majors beyond Node 22.
+- Step-by-step adoption guide in the README (worked example: teamtodo).
 - Templates for `CLAUDE.md`, slash commands, `baseline.json` and workflows.
