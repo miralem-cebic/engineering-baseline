@@ -6,6 +6,12 @@ All notable changes are listed here. The format follows
 
 ## [Unreleased]
 
+### Fixed
+
+- `release.yml` no longer fails when the GitHub release for the tag already exists.
+
+## [0.1.0] - 2026-10-25
+
 ### Added
 
 - `baseline check`, `baseline fleet` and `baseline docs` commands.
