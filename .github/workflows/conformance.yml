@@ -42,4 +42,7 @@ jobs:
         run: |
           flags=""
           if [ "$STRICT" = "true" ]; then flags="--strict"; fi
-          npx --yes "github:miralem-cebic/engineering-baseline#${BASELINE_REF}" check $flags
+          # npx on a github: spec fails on npm 10 ("GitFetcher requires an Arborist constructor"); clone instead.
+          git clone --quiet https://github.com/miralem-cebic/engineering-baseline "$RUNNER_TEMP/baseline"
+          git -C "$RUNNER_TEMP/baseline" checkout --quiet "$BASELINE_REF"
+          node "$RUNNER_TEMP/baseline/bin/baseline.js" check $flags

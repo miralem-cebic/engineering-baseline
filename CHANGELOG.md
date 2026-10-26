@@ -9,6 +9,7 @@ All notable changes are listed here. The format follows
 ### Fixed
 
 - `release.yml` no longer fails when the GitHub release for the tag already exists.
+- `conformance.yml` runs the CLI from a checkout of `baseline-ref` instead of `npx github:...`, which fails on npm 10 with "GitFetcher requires an Arborist constructor to pack a tarball".
 
 ## [0.1.0] - 2026-10-25
 
