@@ -1,6 +1,6 @@
 {
   "name": "engineering-baseline",
-  "version": "0.1.0",
+  "version": "0.1.1",
   "description": "Shared quality rules, configs and conformance checks for software projects",
   "license": "MIT",
   "type": "module",

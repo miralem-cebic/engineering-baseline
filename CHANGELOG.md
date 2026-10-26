@@ -6,6 +6,8 @@ All notable changes are listed here. The format follows
 
 ## [Unreleased]
 
+## [0.1.1] - 2026-10-26
+
 ### Fixed
 
 - `release.yml` no longer fails when the GitHub release for the tag already exists.
