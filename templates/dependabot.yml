@@ -1,0 +1,28 @@
+version: 2
+updates:
+  - package-ecosystem: npm
+    directory: /
+    schedule:
+      interval: weekly
+    # Default titles are "Bump x from a to b", which fails the Conventional Commit title check.
+    commit-message:
+      prefix: chore
+      prefix-development: chore
+      include: scope
+    groups:
+      dev-tooling:
+        patterns: ['*']
+    ignore:
+      # typescript-eslint supports only TypeScript <6.1; TS 7 breaks `npm ci` (ERESOLVE). Lift when it catches up.
+      - dependency-name: typescript
+        versions: ['>=6.1.0']
+      # Types must match the Node version CI and `engines` run on (22).
+      - dependency-name: '@types/node'
+        update-types: ['version-update:semver-major']
+  - package-ecosystem: github-actions
+    directory: /
+    schedule:
+      interval: weekly
+    commit-message:
+      prefix: ci
+      include: scope
