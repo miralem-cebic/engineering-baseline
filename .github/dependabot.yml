@@ -4,6 +4,11 @@ updates:
     directory: /
     schedule:
       interval: weekly
+    # Default titles are "Bump x from a to b", which fails the Conventional Commit title check.
+    commit-message:
+      prefix: chore
+      prefix-development: chore
+      include: scope
     groups:
       dev-tooling:
         patterns: ['*']
@@ -18,3 +23,6 @@ updates:
     directory: /
     schedule:
       interval: weekly
+    commit-message:
+      prefix: ci
+      include: scope

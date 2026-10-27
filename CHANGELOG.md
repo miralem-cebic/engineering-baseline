@@ -6,6 +6,10 @@ All notable changes are listed here. The format follows
 
 ## [Unreleased]
 
+### Fixed
+
+- Dependabot PR titles are Conventional Commits (`chore(deps): bump ...`) via `commit-message` in `.github/dependabot.yml`; `templates/dependabot.yml` carries the same setting for other projects.
+
 ## [0.1.1] - 2026-10-26
 
 ### Fixed

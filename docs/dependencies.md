@@ -22,3 +22,10 @@ projects it checks.
 | `@types/node` | major 22 | Types must match the Node version CI and `engines` use | The project moves to a newer Node LTS |
 
 Both are enforced by `ignore` entries in `.github/dependabot.yml`, so Dependabot does not propose them.
+
+## Dependabot PR titles
+
+Dependabot's default title is `Bump x from a to b`, which is not a Conventional Commit and fails the PR title check.
+Every `updates` entry therefore sets `commit-message`, so titles read `chore(deps): bump ...`,
+`chore(deps-dev): bump ...` and `ci(deps): bump ...`. Copy `templates/dependabot.yml` into a project and drop the
+`ignore` entries that do not apply. For an existing PR with a wrong title, edit the title once; later PRs are correct.
