@@ -15,6 +15,8 @@ export type Expected = JsonValue | { readonly exists: true } | { readonly oneOf:
 export type Check =
   | { readonly type: 'manual' }
   | { readonly type: 'file-exists'; readonly paths: readonly string[] }
+  /** A file with one of these exact names anywhere below `dirs` (generated folders excluded). */
+  | { readonly type: 'file-named'; readonly names: readonly string[]; readonly dirs: readonly string[] }
   | {
       readonly type: 'file-contains';
       readonly paths: readonly string[];

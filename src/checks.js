@@ -179,6 +179,14 @@ export async function runCheck(check, ctx) {
       return fail(`missing: ${check.paths.join(' or ')}`);
     }
 
+    case 'file-named': {
+      for (const dir of check.dirs) {
+        const found = (await fs.walk(dir, check.names)).find((file) => check.names.includes(file.slice(file.lastIndexOf('/') + 1)));
+        if (found !== undefined) return pass(found);
+      }
+      return fail(`no file named ${check.names.join(' or ')} in ${check.dirs.join(', ')}`);
+    }
+
     case 'file-contains': {
       const files = await readExisting(fs, check.paths);
       if (files.length === 0) return fail(`missing: ${check.paths.join(' or ')}`);

@@ -239,8 +239,8 @@
     "since": "0.1.0",
     "checks": [
       {
-        "type": "file-exists",
-        "paths": [
+        "type": "file-named",
+        "names": [
           "package-lock.json",
           "pnpm-lock.yaml",
           "yarn.lock",
@@ -249,9 +249,13 @@
           "Package.resolved",
           "packages.lock.json",
           "gradle.lockfile"
+        ],
+        "dirs": [
+          "."
         ]
       }
-    ]
+    ],
+    "hint": "Commit the lock file; per-project lock files (NuGet packages.lock.json) count anywhere in the repository."
   },
   {
     "id": "GEN-020",

@@ -1,7 +1,7 @@
 import assert from 'node:assert/strict';
 import { describe, it } from 'node:test';
 import { createMemoryFs } from '../src/fs.js';
-import { loadRegistry, parseRule, selectRules } from '../src/registry.js';
+import { loadRegistry, parseCheck, parseRule, selectRules } from '../src/registry.js';
 
 const base = {
   id: 'GEN-001',
@@ -69,8 +69,16 @@ describe('parseRule', () => {
       { type: 'max-lines', path: 'CLAUDE.md', max: 250 },
       { type: 'repo-setting', path: 'allowSquashMerge', expected: true },
       { type: 'repo-contains', dirs: ['src'], exts: ['.ts'], pattern: 'x' },
+      { type: 'file-named', names: ['packages.lock.json'], dirs: ['.'] },
     ];
     assert.equal(parseRule({ ...base, checks }).ok, true);
+  });
+});
+
+describe('parseCheck file-named', () => {
+  it('needs names and dirs', () => {
+    assert.equal(parseCheck({ type: 'file-named', dirs: ['.'] }).ok, false);
+    assert.equal(parseCheck({ type: 'file-named', names: ['a'] }).ok, false);
   });
 });
 

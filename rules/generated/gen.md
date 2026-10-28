@@ -128,7 +128,9 @@ A project nobody can start is not a project.
 
 Reproducible installs are the base of supply-chain control.
 
-**Verified by:** `file-exists`
+**Verified by:** `file-named`
+
+**How to fix:** Commit the lock file; per-project lock files (NuGet packages.lock.json) count anywhere in the repository.
 
 ## GEN-020 Vendor and platform modules are preferred over third-party ones
 

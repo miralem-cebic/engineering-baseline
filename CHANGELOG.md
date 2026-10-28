@@ -6,6 +6,10 @@ All notable changes are listed here. The format follows
 
 ## [Unreleased]
 
+### Added
+
+- `file-named` check (a file with one of the exact names anywhere below `dirs`). `GEN-014` uses it, so per-project lock files such as NuGet `packages.lock.json` count; the rule no longer fails C# solutions that are locked.
+
 ### Fixed
 
 - Dependabot PR titles are Conventional Commits (`chore(deps): bump ...`) via `commit-message` in `.github/dependabot.yml`; `templates/dependabot.yml` carries the same setting for other projects.

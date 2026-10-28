@@ -260,6 +260,28 @@ describe('repo-contains', () => {
   });
 });
 
+describe('file-named', () => {
+  const check = chk({ type: 'file-named', names: ['packages.lock.json'], dirs: ['.'] });
+
+  it('finds the file in the root and in nested projects', async () => {
+    assert.equal((await runCheck(check, ctx({ 'packages.lock.json': '{}' }))).status, 'pass');
+    assert.equal((await runCheck(check, ctx({ 'src/App/packages.lock.json': '{}' }))).status, 'pass');
+  });
+
+  it('matches the whole file name, not a suffix', async () => {
+    const result = await runCheck(check, ctx({ 'src/my-packages.lock.json': '{}' }));
+    assert.equal(result.status, 'fail');
+    assert.match(result.detail, /packages.lock.json/);
+  });
+
+  it('ignores generated folders and searches only the given directories', async () => {
+    assert.equal((await runCheck(check, ctx({ 'obj/packages.lock.json': '{}' }))).status, 'fail');
+    const scoped = chk({ type: 'file-named', names: ['a.lock'], dirs: ['src'] });
+    assert.equal((await runCheck(scoped, ctx({ 'docs/a.lock': '' }))).status, 'fail');
+    assert.equal((await runCheck(scoped, ctx({ 'src/x/a.lock': '' }))).status, 'pass');
+  });
+});
+
 describe('repo-setting', () => {
   /** @param {Record<string, unknown> | null} settings */
   const withGithub = (settings) => ({
