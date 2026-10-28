@@ -40,7 +40,9 @@ EnforceCodeStyleInBuild makes .editorconfig style rules fail builds.
 
 Directory.Packages.props keeps one version per package across projects.
 
-**Verified by:** `file-exists`
+**Verified by:** `file-exists`, `file-contains`
+
+**How to fix:** Copy templates/csharp/Directory.Packages.props and move every PackageReference Version into it.
 
 ## CSH-006 Microsoft packages are preferred over third-party ones
 
@@ -49,3 +51,123 @@ Directory.Packages.props keeps one version per package across projects.
 The BCL and Microsoft.Extensions cover most needs with long-term support.
 
 **Verified by:** `manual`
+
+## CSH-007 Unsafe code is off
+
+**Level:** proposed · **Applies to:** ecosystems: csharp · **Since:** 0.2.0
+
+Without unsafe blocks the runtime guarantees memory safety, which is the closest C# gets to Rust. A Win32 call that cannot avoid pointers lives in one reviewed adapter project instead.
+
+**Verified by:** `file-contains`
+
+**How to fix:** Set AllowUnsafeBlocks to false in Directory.Build.props. LibraryImport needs unsafe; use classic DllImport without pointers in one adapter.
+
+## CSH-008 Integer overflow throws
+
+**Level:** proposed · **Applies to:** ecosystems: csharp · **Since:** 0.2.0
+
+Unchecked arithmetic wraps silently, so a wrong counter, size or address looks valid. A thrown OverflowException is a visible bug.
+
+**Verified by:** `file-contains`
+
+**How to fix:** Set CheckForOverflowUnderflow to true; wrap deliberate wrapping (hashes, checksums) in an unchecked block with a comment.
+
+## CSH-009 MSBuild and NuGet warnings are errors too
+
+**Level:** proposed · **Applies to:** ecosystems: csharp · **Since:** 0.2.0
+
+TreatWarningsAsErrors covers the compiler and analyzers only. MSBuild and NuGet warnings (vulnerable package, missing lock file) stay green without this switch.
+
+**Verified by:** `file-contains`
+
+**How to fix:** Set MSBuildTreatWarningsAsErrors to true next to TreatWarningsAsErrors.
+
+## CSH-010 Banned APIs are enforced by an analyzer
+
+**Level:** proposed · **Applies to:** ecosystems: csharp · **Since:** 0.2.0
+
+A rule in a document is forgotten; a build error is not. BannedApiAnalyzers fails the build on a listed API and names the allowed alternative.
+
+**Verified by:** `file-exists`, `file-contains`
+
+**How to fix:** Copy templates/csharp/BannedSymbols.txt and the PackageReference plus AdditionalFiles items of templates/csharp/Directory.Build.props.
+
+## CSH-011 Banned APIs cover wall-clock time and blocking waits
+
+**Level:** proposed · **Applies to:** ecosystems: csharp · **Since:** 0.2.0
+
+DateTime.Now makes time-dependent code untestable (inject TimeProvider). Task.Wait and Task.Result block the caller and deadlock a UI thread. These two classes cause most flaky tests and frozen windows.
+
+**Verified by:** `file-contains`
+
+**How to fix:** Add the time and task entries of templates/csharp/BannedSymbols.txt.
+
+## CSH-012 Package restore is reproducible
+
+**Level:** proposed · **Applies to:** ecosystems: csharp · **Since:** 0.2.0
+
+Lock files pin the whole dependency graph, transitive packages included, so a build next year restores what was reviewed today and a changed graph shows up in the diff.
+
+**Verified by:** `file-contains`
+
+**How to fix:** Set RestorePackagesWithLockFile to true, commit every packages.lock.json and restore with --locked-mode in CI.
+
+## CSH-013 Known vulnerable packages fail the build
+
+**Level:** proposed · **Applies to:** ecosystems: csharp · **Since:** 0.2.0
+
+NuGetAudit reports advisories as warnings; with warnings as errors a vulnerable package stops the build. Mode all includes transitive packages, where most advisories hide.
+
+**Verified by:** `file-contains`
+
+**How to fix:** Set NuGetAudit to true and NuGetAuditMode to all.
+
+## CSH-014 The .NET SDK version is pinned
+
+**Level:** proposed · **Applies to:** ecosystems: csharp · **Since:** 0.2.0
+
+Analyzer sets and compiler behaviour change between SDK versions. global.json makes every developer PC and the pipeline build with the same one.
+
+**Verified by:** `json-value`
+
+**How to fix:** Add global.json with sdk.version and rollForward latestFeature.
+
+## CSH-015 Tests run on Microsoft.Testing.Platform
+
+**Level:** proposed · **Applies to:** ecosystems: csharp · **Since:** 0.2.0
+
+It is the runner Microsoft ships for MSTest 4 and .NET 10: no VSTest host process, faster startup, and the same behaviour with dotnet test and Visual Studio.
+
+**Verified by:** `json-value`
+
+**How to fix:** Set "test": { "runner": "Microsoft.Testing.Platform" } in global.json.
+
+## CSH-016 Warnings are never silenced with a blanket NoWarn
+
+**Level:** proposed · **Applies to:** ecosystems: csharp · **Since:** 0.2.0
+
+A NoWarn in the build props hides a diagnostic everywhere and without a reason. A suppression in .editorconfig or [SuppressMessage(Justification)] is local and explains itself.
+
+**Verified by:** `file-not-contains`
+
+**How to fix:** Remove NoWarn; fix the code or suppress the single diagnostic in .editorconfig with a comment.
+
+## CSH-017 C# style rules are configured
+
+**Level:** proposed · **Applies to:** ecosystems: csharp · **Since:** 0.2.0
+
+EnforceCodeStyleInBuild (CSH-004) only enforces what .editorconfig asks for. Without a C# section there is nothing to enforce and the severities are the IDE defaults.
+
+**Verified by:** `file-contains`
+
+**How to fix:** Copy the [*.cs] section of templates/csharp/.editorconfig and raise the severities you want enforced to warning.
+
+## CSH-018 Formatting is verified in the gate
+
+**Level:** proposed · **Applies to:** ecosystems: csharp · **Since:** 0.2.0
+
+dotnet format --verify-no-changes turns the style rules into a pass/fail gate that works the same locally and in CI, so no PR carries formatting noise.
+
+**Verified by:** `file-contains`
+
+**How to fix:** Run dotnet format <solution> --verify-no-changes before every commit and in the pipeline; name it in CLAUDE.md.

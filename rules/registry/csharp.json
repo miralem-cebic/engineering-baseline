@@ -90,8 +90,16 @@
         "paths": [
           "Directory.Packages.props"
         ]
+      },
+      {
+        "type": "file-contains",
+        "paths": [
+          "Directory.Packages.props"
+        ],
+        "pattern": "<ManagePackageVersionsCentrally>\\s*true"
       }
-    ]
+    ],
+    "hint": "Copy templates/csharp/Directory.Packages.props and move every PackageReference Version into it."
   },
   {
     "id": "CSH-006",
@@ -107,5 +115,280 @@
         "type": "manual"
       }
     ]
+  },
+  {
+    "id": "CSH-007",
+    "title": "Unsafe code is off",
+    "rationale": "Without unsafe blocks the runtime guarantees memory safety, which is the closest C# gets to Rust. A Win32 call that cannot avoid pointers lives in one reviewed adapter project instead.",
+    "level": "proposed",
+    "since": "0.2.0",
+    "ecosystems": [
+      "csharp"
+    ],
+    "checks": [
+      {
+        "type": "file-contains",
+        "paths": [
+          "Directory.Build.props"
+        ],
+        "pattern": "<AllowUnsafeBlocks>\\s*false"
+      }
+    ],
+    "hint": "Set AllowUnsafeBlocks to false in Directory.Build.props. LibraryImport needs unsafe; use classic DllImport without pointers in one adapter."
+  },
+  {
+    "id": "CSH-008",
+    "title": "Integer overflow throws",
+    "rationale": "Unchecked arithmetic wraps silently, so a wrong counter, size or address looks valid. A thrown OverflowException is a visible bug.",
+    "level": "proposed",
+    "since": "0.2.0",
+    "ecosystems": [
+      "csharp"
+    ],
+    "checks": [
+      {
+        "type": "file-contains",
+        "paths": [
+          "Directory.Build.props"
+        ],
+        "pattern": "<CheckForOverflowUnderflow>\\s*true"
+      }
+    ],
+    "hint": "Set CheckForOverflowUnderflow to true; wrap deliberate wrapping (hashes, checksums) in an unchecked block with a comment."
+  },
+  {
+    "id": "CSH-009",
+    "title": "MSBuild and NuGet warnings are errors too",
+    "rationale": "TreatWarningsAsErrors covers the compiler and analyzers only. MSBuild and NuGet warnings (vulnerable package, missing lock file) stay green without this switch.",
+    "level": "proposed",
+    "since": "0.2.0",
+    "ecosystems": [
+      "csharp"
+    ],
+    "checks": [
+      {
+        "type": "file-contains",
+        "paths": [
+          "Directory.Build.props"
+        ],
+        "pattern": "<MSBuildTreatWarningsAsErrors>\\s*true"
+      }
+    ],
+    "hint": "Set MSBuildTreatWarningsAsErrors to true next to TreatWarningsAsErrors."
+  },
+  {
+    "id": "CSH-010",
+    "title": "Banned APIs are enforced by an analyzer",
+    "rationale": "A rule in a document is forgotten; a build error is not. BannedApiAnalyzers fails the build on a listed API and names the allowed alternative.",
+    "level": "proposed",
+    "since": "0.2.0",
+    "ecosystems": [
+      "csharp"
+    ],
+    "checks": [
+      {
+        "type": "file-exists",
+        "paths": [
+          "BannedSymbols.txt"
+        ]
+      },
+      {
+        "type": "file-contains",
+        "paths": [
+          "Directory.Build.props"
+        ],
+        "pattern": "Microsoft\\.CodeAnalysis\\.BannedApiAnalyzers"
+      }
+    ],
+    "hint": "Copy templates/csharp/BannedSymbols.txt and the PackageReference plus AdditionalFiles items of templates/csharp/Directory.Build.props."
+  },
+  {
+    "id": "CSH-011",
+    "title": "Banned APIs cover wall-clock time and blocking waits",
+    "rationale": "DateTime.Now makes time-dependent code untestable (inject TimeProvider). Task.Wait and Task.Result block the caller and deadlock a UI thread. These two classes cause most flaky tests and frozen windows.",
+    "level": "proposed",
+    "since": "0.2.0",
+    "ecosystems": [
+      "csharp"
+    ],
+    "checks": [
+      {
+        "type": "file-contains",
+        "paths": [
+          "BannedSymbols.txt"
+        ],
+        "pattern": "P:System\\.DateTime\\.UtcNow"
+      },
+      {
+        "type": "file-contains",
+        "paths": [
+          "BannedSymbols.txt"
+        ],
+        "pattern": "P:System\\.Threading\\.Tasks\\.Task`1\\.Result"
+      },
+      {
+        "type": "file-contains",
+        "paths": [
+          "BannedSymbols.txt"
+        ],
+        "pattern": "M:System\\.Threading\\.Tasks\\.Task\\.Wait"
+      }
+    ],
+    "hint": "Add the time and task entries of templates/csharp/BannedSymbols.txt."
+  },
+  {
+    "id": "CSH-012",
+    "title": "Package restore is reproducible",
+    "rationale": "Lock files pin the whole dependency graph, transitive packages included, so a build next year restores what was reviewed today and a changed graph shows up in the diff.",
+    "level": "proposed",
+    "since": "0.2.0",
+    "ecosystems": [
+      "csharp"
+    ],
+    "checks": [
+      {
+        "type": "file-contains",
+        "paths": [
+          "Directory.Build.props"
+        ],
+        "pattern": "<RestorePackagesWithLockFile>\\s*true"
+      }
+    ],
+    "hint": "Set RestorePackagesWithLockFile to true, commit every packages.lock.json and restore with --locked-mode in CI."
+  },
+  {
+    "id": "CSH-013",
+    "title": "Known vulnerable packages fail the build",
+    "rationale": "NuGetAudit reports advisories as warnings; with warnings as errors a vulnerable package stops the build. Mode all includes transitive packages, where most advisories hide.",
+    "level": "proposed",
+    "since": "0.2.0",
+    "ecosystems": [
+      "csharp"
+    ],
+    "checks": [
+      {
+        "type": "file-contains",
+        "paths": [
+          "Directory.Build.props"
+        ],
+        "pattern": "<NuGetAudit>\\s*true"
+      },
+      {
+        "type": "file-contains",
+        "paths": [
+          "Directory.Build.props"
+        ],
+        "pattern": "<NuGetAuditMode>\\s*all"
+      }
+    ],
+    "hint": "Set NuGetAudit to true and NuGetAuditMode to all."
+  },
+  {
+    "id": "CSH-014",
+    "title": "The .NET SDK version is pinned",
+    "rationale": "Analyzer sets and compiler behaviour change between SDK versions. global.json makes every developer PC and the pipeline build with the same one.",
+    "level": "proposed",
+    "since": "0.2.0",
+    "ecosystems": [
+      "csharp"
+    ],
+    "checks": [
+      {
+        "type": "json-value",
+        "files": [
+          "global.json"
+        ],
+        "path": "sdk.version",
+        "expected": {
+          "exists": true
+        }
+      }
+    ],
+    "hint": "Add global.json with sdk.version and rollForward latestFeature."
+  },
+  {
+    "id": "CSH-015",
+    "title": "Tests run on Microsoft.Testing.Platform",
+    "rationale": "It is the runner Microsoft ships for MSTest 4 and .NET 10: no VSTest host process, faster startup, and the same behaviour with dotnet test and Visual Studio.",
+    "level": "proposed",
+    "since": "0.2.0",
+    "ecosystems": [
+      "csharp"
+    ],
+    "checks": [
+      {
+        "type": "json-value",
+        "files": [
+          "global.json"
+        ],
+        "path": "test.runner",
+        "expected": "Microsoft.Testing.Platform"
+      }
+    ],
+    "hint": "Set \"test\": { \"runner\": \"Microsoft.Testing.Platform\" } in global.json."
+  },
+  {
+    "id": "CSH-016",
+    "title": "Warnings are never silenced with a blanket NoWarn",
+    "rationale": "A NoWarn in the build props hides a diagnostic everywhere and without a reason. A suppression in .editorconfig or [SuppressMessage(Justification)] is local and explains itself.",
+    "level": "proposed",
+    "since": "0.2.0",
+    "ecosystems": [
+      "csharp"
+    ],
+    "checks": [
+      {
+        "type": "file-not-contains",
+        "paths": [
+          "Directory.Build.props",
+          "Directory.Build.targets"
+        ],
+        "pattern": "<NoWarn>\\s*[^<\\s]"
+      }
+    ],
+    "hint": "Remove NoWarn; fix the code or suppress the single diagnostic in .editorconfig with a comment."
+  },
+  {
+    "id": "CSH-017",
+    "title": "C# style rules are configured",
+    "rationale": "EnforceCodeStyleInBuild (CSH-004) only enforces what .editorconfig asks for. Without a C# section there is nothing to enforce and the severities are the IDE defaults.",
+    "level": "proposed",
+    "since": "0.2.0",
+    "ecosystems": [
+      "csharp"
+    ],
+    "checks": [
+      {
+        "type": "file-contains",
+        "paths": [
+          ".editorconfig"
+        ],
+        "pattern": "^\\[[^\\]\\n]*\\*\\.(?:cs|\\{[^}\\n]*\\bcs\\b[^}\\n]*\\})",
+        "flags": "m"
+      }
+    ],
+    "hint": "Copy the [*.cs] section of templates/csharp/.editorconfig and raise the severities you want enforced to warning."
+  },
+  {
+    "id": "CSH-018",
+    "title": "Formatting is verified in the gate",
+    "rationale": "dotnet format --verify-no-changes turns the style rules into a pass/fail gate that works the same locally and in CI, so no PR carries formatting noise.",
+    "level": "proposed",
+    "since": "0.2.0",
+    "ecosystems": [
+      "csharp"
+    ],
+    "checks": [
+      {
+        "type": "file-contains",
+        "paths": [
+          "CLAUDE.md",
+          ".github/workflows/ci.yml",
+          "azure-pipelines.yml"
+        ],
+        "pattern": "dotnet\\s+format\\b[^\\n]*--verify-no-changes"
+      }
+    ],
+    "hint": "Run dotnet format <solution> --verify-no-changes before every commit and in the pipeline; name it in CLAUDE.md."
   }
 ]

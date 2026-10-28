@@ -6,6 +6,15 @@ All notable changes are listed here. The format follows
 
 ## [Unreleased]
 
+### Added
+
+- C# rules `CSH-007..018` (proposed), measured on INI-Korrektur: unsafe code off, checked arithmetic, MSBuild warnings as errors, banned APIs (`BannedApiAnalyzers`, time and blocking waits), lock files, NuGet audit, pinned SDK, Microsoft.Testing.Platform, no blanket `NoWarn`, `.editorconfig` C# section, `dotnet format --verify-no-changes` in the gate.
+- `templates/csharp/` (`Directory.Build.props`, `Directory.Packages.props`, `BannedSymbols.txt`, `global.json`, `.editorconfig`), tested against the `CSH` rules, and `docs/csharp.md`.
+
+### Changed
+
+- `CSH-005` also requires `ManagePackageVersionsCentrally`; the file alone managed nothing.
+
 ### Fixed
 
 - Dependabot PR titles are Conventional Commits (`chore(deps): bump ...`) via `commit-message` in `.github/dependabot.yml`; `templates/dependabot.yml` carries the same setting for other projects.
