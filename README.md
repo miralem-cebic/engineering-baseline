@@ -91,6 +91,7 @@ A waiver hides the failure until the date, then the rule fails again and says th
 | `PULL_REQUEST_TEMPLATE.md`, `release.yml` | `.github/` | GEN-009, PIPE-003 |
 | ADR folder and `docs/dependencies.md` | `docs/` | GEN-010, GEN-012 |
 | `scripts/apply-repo-settings.sh` | `scripts/` | REPO-* |
+| `csharp/*` (C# projects, [docs/csharp.md](docs/csharp.md)) | solution root | CSH-* |
 
 **6. Keep it green in CI.** Add the reusable workflow to the project's `ci.yml`
 ([templates/ci-conformance.yml](templates/ci-conformance.yml)):
@@ -144,5 +145,6 @@ Test-first, no runtime dependencies, JavaScript with JSDoc under strict `tsc`. S
 ## Status
 
 0.1.0. The TypeScript, React, local-only, hosted and Postgres/RLS rules are measured against real projects.
-The Swift, Kotlin, C# and Python rules are informed proposals and have not been validated on a real project.
+The Swift, Kotlin and Python rules are informed proposals and have not been validated on a real project. The C# rules
+were derived from INI-Korrektur (a .NET 10 WPF tool) and pass there; they stay `proposed` until a second project uses them.
 Licence: MIT.
