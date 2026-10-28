@@ -8,6 +8,7 @@ All notable changes are listed here. The format follows
 
 ### Added
 
+- `file-named` check (a file with one of the exact names anywhere below `dirs`). `GEN-014` uses it, so per-project lock files such as NuGet `packages.lock.json` count; the rule no longer fails C# solutions that are locked.
 - C# rules `CSH-007..018` (proposed), measured on INI-Korrektur: unsafe code off, checked arithmetic, MSBuild warnings as errors, banned APIs (`BannedApiAnalyzers`, time and blocking waits), lock files, NuGet audit, pinned SDK, Microsoft.Testing.Platform, no blanket `NoWarn`, `.editorconfig` C# section, `dotnet format --verify-no-changes` in the gate.
 - `templates/csharp/` (`Directory.Build.props`, `Directory.Packages.props`, `BannedSymbols.txt`, `global.json`, `.editorconfig`), tested against the `CSH` rules, and `docs/csharp.md`.
 

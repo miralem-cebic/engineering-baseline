@@ -49,6 +49,12 @@ export function parseCheck(value) {
       const paths = stringList(value, 'paths');
       return paths ? { ok: true, value: { type, paths } } : missing('paths');
     }
+    case 'file-named': {
+      const names = stringList(value, 'names');
+      const dirs = stringList(value, 'dirs');
+      if (!names) return missing('names');
+      return dirs ? { ok: true, value: { type, names, dirs } } : missing('dirs');
+    }
     case 'file-contains':
     case 'file-not-contains': {
       const paths = stringList(value, 'paths');
