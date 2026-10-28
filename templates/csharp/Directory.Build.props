@@ -1,0 +1,31 @@
+<Project>
+  <!--
+    engineering-baseline, C# build rules (CSH-001..CSH-018). Applies to every project below this folder.
+    Never weaken a setting to make a build pass; fix the code, or record a justified exception.
+    Suppress only in .editorconfig or with [SuppressMessage(Justification = "...")], never with a blanket NoWarn.
+  -->
+  <PropertyGroup>
+    <LangVersion>latest</LangVersion>
+    <Nullable>enable</Nullable>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <AllowUnsafeBlocks>false</AllowUnsafeBlocks>
+    <CheckForOverflowUnderflow>true</CheckForOverflowUnderflow>
+    <Deterministic>true</Deterministic>
+
+    <TreatWarningsAsErrors>true</TreatWarningsAsErrors>
+    <MSBuildTreatWarningsAsErrors>true</MSBuildTreatWarningsAsErrors>
+    <AnalysisLevel>latest-all</AnalysisLevel>
+    <EnforceCodeStyleInBuild>true</EnforceCodeStyleInBuild>
+    <GenerateDocumentationFile>true</GenerateDocumentationFile> <!-- IDE0005 (unused usings) is only reported with it -->
+
+    <RestorePackagesWithLockFile>true</RestorePackagesWithLockFile> <!-- versions: Directory.Packages.props -->
+    <NuGetAudit>true</NuGetAudit>
+    <NuGetAuditMode>all</NuGetAuditMode> <!-- transitive packages too -->
+    <NuGetAuditLevel>low</NuGetAuditLevel>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <PackageReference Include="Microsoft.CodeAnalysis.BannedApiAnalyzers" PrivateAssets="all" />
+    <AdditionalFiles Include="$(MSBuildThisFileDirectory)BannedSymbols.txt" />
+  </ItemGroup>
+</Project>
