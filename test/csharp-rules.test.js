@@ -89,3 +89,45 @@ describe('C# rules', () => {
     assert.equal((await measure(files)).get('CSH-018'), 'pass');
   });
 });
+
+/**
+ * Splits an .editorconfig into its sections: header (without brackets) to the trimmed lines below it.
+ * @param {string} text
+ * @returns {Map<string, string[]>}
+ */
+function editorconfigSections(text) {
+  /** @type {Map<string, string[]>} */
+  const sections = new Map();
+  /** @type {string[] | undefined} */
+  let current;
+  for (const line of text.split('\n')) {
+    const header = /^\[(.+)\]\s*$/.exec(line);
+    if (header?.[1] !== undefined) {
+      current = [];
+      sections.set(header[1], current);
+    } else {
+      current?.push(line.trim());
+    }
+  }
+  return sections;
+}
+
+describe('templates/csharp/.editorconfig', () => {
+  const sections = editorconfigSections(readFileSync(new URL('.editorconfig', TEMPLATE_DIR), 'utf8'));
+  const relaxed = ['dotnet_diagnostic.CS1591.severity', 'dotnet_diagnostic.CA1515.severity'];
+
+  it('keeps XML comments and internal-by-default types strict for production code', () => {
+    const lines = sections.get('*.cs') ?? [];
+    assert.ok(lines.length > 0, 'the [*.cs] section is missing');
+    for (const key of relaxed) assert.ok(!lines.some((line) => line.startsWith(key)), `${key} must not be relaxed in [*.cs]`);
+  });
+
+  it('relaxes CS1591 and CA1515 for test projects only', () => {
+    // GenerateDocumentationFile + warnings as errors make CS1591 fail every public test member; a test project on
+    // Microsoft.Testing.Platform is an executable, so CA1515 fails every public fixture that xUnit requires to be public.
+    const tests = [...sections].filter(([header]) => header.includes('.Tests') && header.endsWith('.cs'));
+    assert.equal(tests.length, 1, 'expected one .cs section for *.Tests folders');
+    const lines = tests[0]?.[1] ?? [];
+    for (const key of relaxed) assert.ok(lines.includes(`${key} = none`), `${key} = none is missing`);
+  });
+});
