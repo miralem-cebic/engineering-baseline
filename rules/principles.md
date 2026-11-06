@@ -37,23 +37,31 @@ it and add no supply chain. A third-party dependency needs a reason: what it doe
 and who owns the upgrade. Examples: `node:test` over a test framework for a CLI; `pathlib` over a path
 package; Apple frameworks over community packages; `Microsoft.Extensions.*` over equivalents.
 
-## 5. Crash-safe by design
+## 5. Third-party code sits behind a seam you own
+
+When a dependency is justified, the project talks to it through one module it owns: an adapter that offers the
+operations the project uses, in the project's own types, and returns errors as values. Only the adapter imports
+the library. A deprecated method, a major upgrade, a licence change or a replacement then costs one file instead
+of every call site, and tests get a single place to fake. The platform, frameworks that define the shape of the
+app, and dev tooling are exempt. See [docs/third-party-adapters.md](../docs/third-party-adapters.md).
+
+## 6. Crash-safe by design
 
 Errors are caught at one place and shown, not swallowed. State is written so that a crash loses seconds,
 not hours. Deletes are soft. Schemas are versioned and migrated. A render error must not blank the app.
 
-## 6. Fast by default
+## 7. Fast by default
 
 Pay for what the user opens. Lazy-load what they might not need, cache hashed assets immutably, keep a
 budget for bundle size and start-up time and fail the build when it is exceeded.
 
-## 7. Rules are data, and they evolve
+## 8. Rules are data, and they evolve
 
 A rule has a level (`proposed`, `should`, `must`), a scope (ecosystems, topologies) and checks. A new rule
 starts as `proposed`; it is measured on every project before it becomes `must`. A project that cannot comply
 yet records a waiver with a reason and an expiry date. See `docs/adr/`.
 
-## 8. Agents follow the same rules
+## 9. Agents follow the same rules
 
 Claude Code gets the rules through `CLAUDE.md`, slash commands for repeated workflows, and the same CI
 gates as everyone else. An instruction file that is too long is skimmed, so it stays short and links out.

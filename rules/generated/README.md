@@ -8,12 +8,12 @@ Generated from `rules/registry`. `must` rules fail a check run, `should` rules f
 | --- | --- |
 | must | 28 |
 | should | 44 |
-| proposed | 55 |
+| proposed | 56 |
 
 - [AI](ai.md): 8 rules
 - [CSH](csh.md): 18 rules
 - [DB](db.md): 7 rules
-- [GEN](gen.md): 15 rules
+- [GEN](gen.md): 16 rules
 - [HOS](hos.md): 8 rules
 - [KOT](kot.md): 5 rules
 - [LOC](loc.md): 8 rules

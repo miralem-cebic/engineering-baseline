@@ -141,3 +141,13 @@ First-party and standard-library modules are maintained with the platform, audit
 **Verified by:** `manual`
 
 **How to fix:** Before adding a dependency, check the platform first and note the result in the PR.
+
+## GEN-021 Third-party libraries are used only behind a project-owned adapter
+
+**Level:** proposed · **Applies to:** all projects · **Since:** 0.2.0
+
+A library called from everywhere can only be upgraded, fixed or replaced everywhere at once. An adapter the project owns turns a deprecated method, a major upgrade or a swap into an edit in one file, and gives tests a single seam to fake.
+
+**Verified by:** `manual`
+
+**How to fix:** Import each library in exactly one project-owned module (for example src/adapters/<lib>.ts) that exposes the operations the project uses in the project's own types; the rest of the code imports only that module. Platform, app frameworks and dev tooling are exempt. See docs/third-party-adapters.md.

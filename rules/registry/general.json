@@ -269,5 +269,18 @@
       }
     ],
     "hint": "Before adding a dependency, check the platform first and note the result in the PR."
+  },
+  {
+    "id": "GEN-021",
+    "title": "Third-party libraries are used only behind a project-owned adapter",
+    "rationale": "A library called from everywhere can only be upgraded, fixed or replaced everywhere at once. An adapter the project owns turns a deprecated method, a major upgrade or a swap into an edit in one file, and gives tests a single seam to fake.",
+    "level": "proposed",
+    "since": "0.2.0",
+    "checks": [
+      {
+        "type": "manual"
+      }
+    ],
+    "hint": "Import each library in exactly one project-owned module (for example src/adapters/<lib>.ts) that exposes the operations the project uses in the project's own types; the rest of the code imports only that module. Platform, app frameworks and dev tooling are exempt. See docs/third-party-adapters.md."
   }
 ]
