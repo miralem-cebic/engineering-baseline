@@ -98,7 +98,8 @@ A waiver hides the failure until the date, then the rule fails again and says th
 
 ```yaml
 conformance:
-  uses: miralem-cebic/engineering-baseline/.github/workflows/conformance.yml@main
+  # Commit of a release, tag in a comment (SEC-004); take it from `git ls-remote --tags` (the `^{}` line for annotated tags).
+  uses: miralem-cebic/engineering-baseline/.github/workflows/conformance.yml@<commit-sha> # v<version>
   with:
     strict: false   # switch to true once the should rules pass
 ```
@@ -112,8 +113,14 @@ GITHUB_TOKEN=... npx github:miralem-cebic/engineering-baseline check
 ```
 
 **8. Stay current.** A rule that is promoted to `must` turns the conformance job red in every project until it
-is fixed or waived; the PR that promotes it shows the impact (`baseline fleet`). To pin a project to a known rule
-set, use `baseline-ref` in the workflow and `npx github:miralem-cebic/engineering-baseline#<tag> check` locally.
+is fixed or waived; the PR that promotes it shows the impact (`baseline fleet`).
+
+The `uses:` line from step 6 decides which rules apply: the checker runs from the same commit as the workflow, so
+updating that line (Dependabot can) moves workflow and rules together. Change `"baseline"` in `baseline.json` in the
+same PR. Releases up to v0.1.1 ignore this and run the checker from `main`; there, set `baseline-ref` to the same
+commit (`baseline-ref` takes a branch, tag or full commit). To run the same version locally, use
+`npx github:miralem-cebic/engineering-baseline#<tag> check`. A full commit SHA fails there on npm 10 (`GitFetcher
+requires an Arborist constructor`); clone the commit and run `node bin/baseline.js check --root <project>` instead.
 
 Other flags: `check --strict` (also fail on `should`), `check --json` (machine-readable), `check --root <dir>`.
 

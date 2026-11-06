@@ -4,7 +4,9 @@ name: Conformance
 #
 #   jobs:
 #     conformance:
-#       uses: miralem-cebic/engineering-baseline/.github/workflows/conformance.yml@main
+#       # Pin to the commit of a release, with the tag in a comment. The checker runs from the same commit,
+#       # so this one line pins the rules too; Dependabot can update it.
+#       uses: miralem-cebic/engineering-baseline/.github/workflows/conformance.yml@<commit-sha> # v<version>
 #       with:
 #         strict: false
 
@@ -16,9 +18,11 @@ on:
         type: boolean
         default: false
       baseline-ref:
-        description: Branch, tag or commit of engineering-baseline to run
+        description: >-
+          Branch, tag or commit of engineering-baseline to run. Empty runs the checker from the commit of this
+          workflow file, so pinning the `uses:` line pins the checker too.
         type: string
-        default: main
+        default: ''
 
 permissions:
   contents: read
@@ -38,11 +42,18 @@ jobs:
       - name: Run baseline check
         env:
           STRICT: ${{ inputs.strict }}
-          BASELINE_REF: ${{ inputs.baseline-ref }}
+          # job.workflow_sha is the commit of this workflow file as the caller resolved it (@main, tag or commit).
+          BASELINE_REF: ${{ inputs.baseline-ref || job.workflow_sha }}
         run: |
           flags=""
           if [ "$STRICT" = "true" ]; then flags="--strict"; fi
+          if [ -z "$BASELINE_REF" ]; then
+            # job.workflow_sha does not exist on GitHub Enterprise Server. Do not fall back to main: that hides drift.
+            echo "::error::Cannot tell which version of the checker to run. Set the baseline-ref input." >&2
+            exit 1
+          fi
           # npx on a github: spec fails on npm 10 ("GitFetcher requires an Arborist constructor"); clone instead.
           git clone --quiet https://github.com/miralem-cebic/engineering-baseline "$RUNNER_TEMP/baseline"
           git -C "$RUNNER_TEMP/baseline" checkout --quiet "$BASELINE_REF"
+          echo "Baseline checker: $(git -C "$RUNNER_TEMP/baseline" rev-parse HEAD) (requested: $BASELINE_REF)"
           node "$RUNNER_TEMP/baseline/bin/baseline.js" check $flags
