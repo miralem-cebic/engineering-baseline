@@ -1,5 +1,7 @@
 # Add as a job in .github/workflows/ci.yml
 conformance:
-  uses: miralem-cebic/engineering-baseline/.github/workflows/conformance.yml@main
+  # Pin to the commit of a release, tag in a comment (SEC-004). The checker runs from the same commit, so this one
+  # line pins the rules too. Releases up to v0.1.1 ran the checker from `main`: add `baseline-ref: <same commit>` there.
+  uses: miralem-cebic/engineering-baseline/.github/workflows/conformance.yml@<commit-sha> # v<version>
   with:
     strict: false

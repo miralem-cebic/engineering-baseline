@@ -10,7 +10,7 @@ Settings live on GitHub, not in the repository, so `REPO-*` rules read them thro
 | `ci.yml` | pull request, push to `main` | `npm ci`, typecheck, lint with zero warnings, tests, audit, PR-title check, baseline conformance. Cancels superseded runs. | GEN-001, GEN-002, TS-021, SEC-001, PIPE-004 |
 | `build.yml` | `workflow_call` (apps only) | One reusable build, used by CI and release; E2E against the built artefact; SBOM | PIPE-001, PIPE-005, SEC-002 |
 | `release.yml` | tag `v*` | Runs the gates again, publishes, creates the release with generated notes | PIPE-002, PIPE-003 |
-| `conformance.yml` | `workflow_call` | Runs `baseline check` in the calling project | |
+| `conformance.yml` | `workflow_call` | Runs `baseline check` in the calling project, with the checker from the commit of the workflow file (or `baseline-ref`) | |
 | Hosted projects | pull request | Preview deploy; immutable deploys allow rollback | PIPE-006, HOS-008 |
 
 Workflows declare `permissions: contents: read` at the top and widen per job (SEC-003). Third-party actions are

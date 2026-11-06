@@ -16,6 +16,7 @@ All notable changes are listed here. The format follows
 
 ### Changed
 
+- `conformance.yml`: `baseline-ref` no longer defaults to `main`. Empty, the checker runs from the commit of the workflow file (`job.workflow_sha`), so pinning `uses: ...conformance.yml@<commit>` pins the rules too and Dependabot moves both. Callers on `@main` see no change; callers on an older pin must set `baseline-ref` to the same commit until they move to a release with this change. An unknown version (GitHub Enterprise Server) fails instead of falling back to `main`. README steps 6 and 8, `templates/ci-conformance.yml` and the header of `conformance.yml` show the pinned form. A commit SHA as `baseline-ref` already works since the checkout fix in 0.1.1.
 - `CSH-005` also requires `ManagePackageVersionsCentrally`; the file alone managed nothing.
 
 ### Fixed
