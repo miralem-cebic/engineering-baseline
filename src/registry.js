@@ -1,4 +1,4 @@
-import { ECOSYSTEMS, TOPOLOGIES } from './config.js';
+import { DEFAULT_SURFACE, ECOSYSTEMS, SURFACES, TOPOLOGIES } from './config.js';
 import { isNonEmptyString, isRecord, isStringArray, pick } from './guards.js';
 import { isJsonValue, parseJsonc } from './jsonc.js';
 
@@ -174,6 +174,8 @@ export function parseRule(value) {
   if (!ecosystems.ok) return { ok: false, error: `${id}: ${ecosystems.error}` };
   const topologies = scopeList(TOPOLOGIES, value['topologies'], 'topology');
   if (!topologies.ok) return { ok: false, error: `${id}: ${topologies.error}` };
+  const surfaces = scopeList(SURFACES, value['surfaces'], 'surface');
+  if (!surfaces.ok) return { ok: false, error: `${id}: ${surfaces.error}` };
 
   const rawChecks = value['checks'];
   if (!Array.isArray(rawChecks) || rawChecks.length === 0) return { ok: false, error: `${id}: at least one check is required` };
@@ -196,6 +198,7 @@ export function parseRule(value) {
       checks,
       ...(ecosystems.value === undefined ? {} : { ecosystems: ecosystems.value }),
       ...(topologies.value === undefined ? {} : { topologies: topologies.value }),
+      ...(surfaces.value === undefined ? {} : { surfaces: surfaces.value }),
       ...(typeof hint === 'string' ? { hint } : {}),
     },
   };
@@ -234,14 +237,21 @@ export async function loadRegistry(fs, dir) {
 }
 
 /**
- * Profile selection: unscoped rules apply everywhere; a scoped rule needs a matching ecosystem AND topology.
+ * Profile selection: unscoped rules apply everywhere; a scoped rule needs a matching ecosystem AND topology AND
+ * surface. A profile without a surface is `web` (ADR 0007).
  * @param {readonly import('./types.js').Rule[]} rules
- * @param {{ ecosystems: readonly import('./types.js').Ecosystem[]; topology: import('./types.js').Topology }} profile
+ * @param {{
+ *   ecosystems: readonly import('./types.js').Ecosystem[];
+ *   topology: import('./types.js').Topology;
+ *   surface?: import('./types.js').Surface;
+ * }} profile
  */
 export function selectRules(rules, profile) {
+  const surface = profile.surface ?? DEFAULT_SURFACE;
   return rules.filter((rule) => {
     const ecosystemOk = rule.ecosystems === undefined || rule.ecosystems.some((e) => profile.ecosystems.includes(e));
     const topologyOk = rule.topologies === undefined || rule.topologies.includes(profile.topology);
-    return ecosystemOk && topologyOk;
+    const surfaceOk = rule.surfaces === undefined || rule.surfaces.includes(surface);
+    return ecosystemOk && topologyOk && surfaceOk;
   });
 }

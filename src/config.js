@@ -3,6 +3,9 @@ import { parseJsonc } from './jsonc.js';
 
 export const ECOSYSTEMS = /** @type {const} */ (['typescript', 'react', 'postgres', 'swift', 'kotlin', 'csharp', 'python']);
 export const TOPOLOGIES = /** @type {const} */ (['local-only', 'hosted-no-db', 'hosted-db']);
+export const SURFACES = /** @type {const} */ (['web', 'api']);
+/** The surface of a project that declares none: it serves browser content (ADR 0007). */
+export const DEFAULT_SURFACE = 'web';
 
 const DATE = /^\d{4}-\d{2}-\d{2}$/;
 // Strict on purpose: the value ends up in an API URL path.
@@ -42,7 +45,7 @@ export function parseConfig(text) {
 export function validateConfig(raw) {
   if (!isRecord(raw)) return { ok: false, error: 'baseline.json must be an object' };
 
-  const { baseline, ecosystems, topology, waivers, repo } = raw;
+  const { baseline, ecosystems, topology, surface, waivers, repo } = raw;
   if (!isNonEmptyString(baseline)) return { ok: false, error: 'baseline (version) is required' };
 
   if (!Array.isArray(ecosystems) || ecosystems.length === 0) {
@@ -61,6 +64,11 @@ export function validateConfig(raw) {
   const knownTopology = pick(TOPOLOGIES, topology);
   if (knownTopology === undefined) {
     return { ok: false, error: `unknown topology ${JSON.stringify(topology)}; known: ${TOPOLOGIES.join(', ')}` };
+  }
+
+  const knownSurface = surface === undefined ? undefined : pick(SURFACES, surface);
+  if (surface !== undefined && knownSurface === undefined) {
+    return { ok: false, error: `unknown surface ${JSON.stringify(surface)}; known: ${SURFACES.join(', ')}` };
   }
 
   /** @type {import('./types.js').Waiver[]} */
@@ -84,6 +92,7 @@ export function validateConfig(raw) {
       baseline,
       ecosystems: knownEcosystems,
       topology: knownTopology,
+      ...(knownSurface === undefined ? {} : { surface: knownSurface }),
       waivers: knownWaivers,
       ...(repo === undefined ? {} : { repo }),
     },

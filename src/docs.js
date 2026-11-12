@@ -10,6 +10,7 @@ function scope(rule) {
   const parts = [];
   if (rule.ecosystems !== undefined) parts.push(`ecosystems: ${rule.ecosystems.join(', ')}`);
   if (rule.topologies !== undefined) parts.push(`topologies: ${rule.topologies.join(', ')}`);
+  if (rule.surfaces !== undefined) parts.push(`surfaces: ${rule.surfaces.join(', ')}`);
   return parts.length === 0 ? 'all projects' : parts.join('; ');
 }
 

@@ -73,6 +73,29 @@ describe('repo field', () => {
   });
 });
 
+describe('surface field (ADR 0007)', () => {
+  it('is optional; absent means the project serves browser content', () => {
+    const result = parseConfig(JSON.stringify(valid));
+    assert.equal(result.ok, true);
+    assert.equal(result.value.surface, undefined);
+  });
+
+  it('accepts web and api', () => {
+    for (const surface of ['web', 'api']) {
+      const result = parseConfig(JSON.stringify({ ...valid, topology: 'hosted-db', surface }));
+      assert.equal(result.ok, true);
+      assert.equal(result.value.surface, surface);
+    }
+  });
+
+  it('rejects an unknown surface and lists the known ones', () => {
+    const result = parseConfig(JSON.stringify({ ...valid, surface: 'grpc' }));
+    assert.equal(result.ok, false);
+    assert.match(result.error, /surface/);
+    assert.match(result.error, /web, api/);
+  });
+});
+
 describe('activeWaiver', () => {
   const waivers = [{ rule: 'TS-010', reason: 'r', expires: '2027-01-31' }];
 

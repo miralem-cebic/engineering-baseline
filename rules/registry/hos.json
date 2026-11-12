@@ -9,6 +9,9 @@
       "hosted-no-db",
       "hosted-db"
     ],
+    "surfaces": [
+      "web"
+    ],
     "checks": [
       {
         "type": "file-contains",
@@ -22,7 +25,7 @@
         "flags": "i"
       }
     ],
-    "hint": "Define the CSP in netlify.toml or the host's header config."
+    "hint": "Define the CSP in netlify.toml or the host's header config. A project that serves only an HTTP API declares \"surface\": \"api\" in baseline.json and gets HOS-009..012 instead."
   },
   {
     "id": "HOS-002",
@@ -33,6 +36,9 @@
     "topologies": [
       "hosted-no-db",
       "hosted-db"
+    ],
+    "surfaces": [
+      "web"
     ],
     "checks": [
       {
@@ -58,6 +64,9 @@
       "hosted-no-db",
       "hosted-db"
     ],
+    "surfaces": [
+      "web"
+    ],
     "checks": [
       {
         "type": "file-contains",
@@ -81,6 +90,9 @@
     "topologies": [
       "hosted-no-db",
       "hosted-db"
+    ],
+    "surfaces": [
+      "web"
     ],
     "checks": [
       {
@@ -124,6 +136,9 @@
       "hosted-no-db",
       "hosted-db"
     ],
+    "surfaces": [
+      "web"
+    ],
     "checks": [
       {
         "type": "file-contains",
@@ -147,6 +162,9 @@
     "topologies": [
       "hosted-no-db",
       "hosted-db"
+    ],
+    "surfaces": [
+      "web"
     ],
     "checks": [
       {
@@ -173,5 +191,165 @@
         "type": "manual"
       }
     ]
+  },
+  {
+    "id": "HOS-009",
+    "title": "API responses carry a deny-all Content-Security-Policy",
+    "rationale": "An API cannot promise it never returns HTML: a framework error page or a reflected value with the wrong Content-Type is rendered by the browser. default-src 'none' gives such a response nothing to load or run; frame-ancestors 'none' stops it being framed, and it does not fall back to default-src.",
+    "level": "proposed",
+    "since": "0.2.0",
+    "topologies": [
+      "hosted-no-db",
+      "hosted-db"
+    ],
+    "surfaces": [
+      "api"
+    ],
+    "checks": [
+      {
+        "type": "repo-contains",
+        "dirs": [
+          "."
+        ],
+        "exts": [
+          ".cs",
+          ".ts",
+          ".mts",
+          ".js",
+          ".mjs",
+          ".cjs",
+          ".py",
+          ".kt",
+          "host.json"
+        ],
+        "pattern": "default-src\\s+'none'|defaultSrc\\s*:\\s*\\[\\s*[\\\"']'none'[\\\"']"
+      },
+      {
+        "type": "repo-contains",
+        "dirs": [
+          "."
+        ],
+        "exts": [
+          ".cs",
+          ".ts",
+          ".mts",
+          ".js",
+          ".mjs",
+          ".cjs",
+          ".py",
+          ".kt",
+          "host.json"
+        ],
+        "pattern": "frame-ancestors\\s+'none'|frameAncestors\\s*:\\s*\\[\\s*[\\\"']'none'[\\\"']"
+      }
+    ],
+    "hint": "Send Content-Security-Policy: default-src 'none'; frame-ancestors 'none' on every response from one place: a middleware (Azure Functions IFunctionsWorkerMiddleware, ASP.NET Core app.Use, a Node header hook, helmet with defaultSrc and frameAncestors 'none') or customHeaders in the Azure Functions host.json. See the OWASP REST Security Cheat Sheet."
+  },
+  {
+    "id": "HOS-010",
+    "title": "API responses forbid MIME sniffing",
+    "rationale": "Without nosniff a browser may read a JSON or text response as HTML or script and run what an attacker put into it.",
+    "level": "proposed",
+    "since": "0.2.0",
+    "topologies": [
+      "hosted-no-db",
+      "hosted-db"
+    ],
+    "surfaces": [
+      "api"
+    ],
+    "checks": [
+      {
+        "type": "repo-contains",
+        "dirs": [
+          "."
+        ],
+        "exts": [
+          ".cs",
+          ".ts",
+          ".mts",
+          ".js",
+          ".mjs",
+          ".cjs",
+          ".py",
+          ".kt",
+          "host.json"
+        ],
+        "pattern": "nosniff|\\bhelmet\\s*\\("
+      }
+    ],
+    "hint": "Send X-Content-Type-Options: nosniff from the same middleware or host.json customHeaders as HOS-009; helmet sets it by default."
+  },
+  {
+    "id": "HOS-011",
+    "title": "API responses are not stored by caches",
+    "rationale": "API responses carry per-request and often personal data, and a browser or shared cache must not hand them to the next reader. Immutable caching (HOS-006) is for hashed static assets, which an API does not serve.",
+    "level": "proposed",
+    "since": "0.2.0",
+    "topologies": [
+      "hosted-no-db",
+      "hosted-db"
+    ],
+    "surfaces": [
+      "api"
+    ],
+    "checks": [
+      {
+        "type": "repo-contains",
+        "dirs": [
+          "."
+        ],
+        "exts": [
+          ".cs",
+          ".ts",
+          ".mts",
+          ".js",
+          ".mjs",
+          ".cjs",
+          ".py",
+          ".kt",
+          "host.json"
+        ],
+        "pattern": "Cache[-_]?Control[^\\n]*no[-_]?store|NoStore\\s*=\\s*true",
+        "flags": "i"
+      }
+    ],
+    "hint": "Send Cache-Control: no-store from the same middleware or host.json customHeaders as HOS-009; relax it per endpoint only for public, non-personal data."
+  },
+  {
+    "id": "HOS-012",
+    "title": "API responses enable HSTS",
+    "rationale": "A platform's HTTPS-only redirect protects the server, but every request a client starts over plain HTTP has already travelled in clear with its credentials. HSTS makes browsers refuse plain HTTP to the API for its max-age.",
+    "level": "proposed",
+    "since": "0.2.0",
+    "topologies": [
+      "hosted-no-db",
+      "hosted-db"
+    ],
+    "surfaces": [
+      "api"
+    ],
+    "checks": [
+      {
+        "type": "repo-contains",
+        "dirs": [
+          "."
+        ],
+        "exts": [
+          ".cs",
+          ".ts",
+          ".mts",
+          ".js",
+          ".mjs",
+          ".cjs",
+          ".py",
+          ".kt",
+          "host.json"
+        ],
+        "pattern": "Strict-Transport-Security|\\bUseHsts\\s*\\(|\\bhelmet\\s*\\(|\\\"hsts\\\"\\s*:\\s*\\{[^}]*\\\"isEnabled\\\"\\s*:\\s*true",
+        "flags": "i"
+      }
+    ],
+    "hint": "Send Strict-Transport-Security: max-age=31536000; includeSubDomains (or enable hsts in the Azure Functions host.json, UseHsts in ASP.NET Core, helmet in Node) and keep the platform's HTTPS-only switch on."
   }
 ]

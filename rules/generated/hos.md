@@ -4,17 +4,17 @@
 
 ## HOS-001 A Content-Security-Policy is served
 
-**Level:** must · **Applies to:** topologies: hosted-no-db, hosted-db · **Since:** 0.1.0
+**Level:** must · **Applies to:** topologies: hosted-no-db, hosted-db; surfaces: web · **Since:** 0.1.0
 
 The strongest browser defence against injected script.
 
 **Verified by:** `file-contains`
 
-**How to fix:** Define the CSP in netlify.toml or the host's header config.
+**How to fix:** Define the CSP in netlify.toml or the host's header config. A project that serves only an HTTP API declares "surface": "api" in baseline.json and gets HOS-009..012 instead.
 
 ## HOS-002 HSTS is enabled
 
-**Level:** should · **Applies to:** topologies: hosted-no-db, hosted-db · **Since:** 0.1.0
+**Level:** should · **Applies to:** topologies: hosted-no-db, hosted-db; surfaces: web · **Since:** 0.1.0
 
 Forces HTTPS and prevents downgrade attacks.
 
@@ -22,7 +22,7 @@ Forces HTTPS and prevents downgrade attacks.
 
 ## HOS-003 Framing and MIME sniffing are blocked
 
-**Level:** should · **Applies to:** topologies: hosted-no-db, hosted-db · **Since:** 0.1.0
+**Level:** should · **Applies to:** topologies: hosted-no-db, hosted-db; surfaces: web · **Since:** 0.1.0
 
 Stops clickjacking and content-type confusion.
 
@@ -30,7 +30,7 @@ Stops clickjacking and content-type confusion.
 
 ## HOS-004 script-src has no unsafe-inline
 
-**Level:** must · **Applies to:** topologies: hosted-no-db, hosted-db · **Since:** 0.1.0
+**Level:** must · **Applies to:** topologies: hosted-no-db, hosted-db; surfaces: web · **Since:** 0.1.0
 
 'unsafe-inline' in script-src voids the CSP against XSS.
 
@@ -46,7 +46,7 @@ A .env.example lists every variable without values.
 
 ## HOS-006 Hashed assets are cached immutably
 
-**Level:** should · **Applies to:** topologies: hosted-no-db, hosted-db · **Since:** 0.1.0
+**Level:** should · **Applies to:** topologies: hosted-no-db, hosted-db; surfaces: web · **Since:** 0.1.0
 
 Fast repeat visits cost nothing and need no revalidation.
 
@@ -54,7 +54,7 @@ Fast repeat visits cost nothing and need no revalidation.
 
 ## HOS-007 No secret is exposed to the client bundle
 
-**Level:** must · **Applies to:** topologies: hosted-no-db, hosted-db · **Since:** 0.1.0
+**Level:** must · **Applies to:** topologies: hosted-no-db, hosted-db; surfaces: web · **Since:** 0.1.0
 
 Anything prefixed VITE_ ends up in the browser.
 
@@ -67,3 +67,43 @@ Anything prefixed VITE_ ends up in the browser.
 Immutable deploys with one-click rollback turn incidents into minutes.
 
 **Verified by:** `manual`
+
+## HOS-009 API responses carry a deny-all Content-Security-Policy
+
+**Level:** proposed · **Applies to:** topologies: hosted-no-db, hosted-db; surfaces: api · **Since:** 0.2.0
+
+An API cannot promise it never returns HTML: a framework error page or a reflected value with the wrong Content-Type is rendered by the browser. default-src 'none' gives such a response nothing to load or run; frame-ancestors 'none' stops it being framed, and it does not fall back to default-src.
+
+**Verified by:** `repo-contains`
+
+**How to fix:** Send Content-Security-Policy: default-src 'none'; frame-ancestors 'none' on every response from one place: a middleware (Azure Functions IFunctionsWorkerMiddleware, ASP.NET Core app.Use, a Node header hook, helmet with defaultSrc and frameAncestors 'none') or customHeaders in the Azure Functions host.json. See the OWASP REST Security Cheat Sheet.
+
+## HOS-010 API responses forbid MIME sniffing
+
+**Level:** proposed · **Applies to:** topologies: hosted-no-db, hosted-db; surfaces: api · **Since:** 0.2.0
+
+Without nosniff a browser may read a JSON or text response as HTML or script and run what an attacker put into it.
+
+**Verified by:** `repo-contains`
+
+**How to fix:** Send X-Content-Type-Options: nosniff from the same middleware or host.json customHeaders as HOS-009; helmet sets it by default.
+
+## HOS-011 API responses are not stored by caches
+
+**Level:** proposed · **Applies to:** topologies: hosted-no-db, hosted-db; surfaces: api · **Since:** 0.2.0
+
+API responses carry per-request and often personal data, and a browser or shared cache must not hand them to the next reader. Immutable caching (HOS-006) is for hashed static assets, which an API does not serve.
+
+**Verified by:** `repo-contains`
+
+**How to fix:** Send Cache-Control: no-store from the same middleware or host.json customHeaders as HOS-009; relax it per endpoint only for public, non-personal data.
+
+## HOS-012 API responses enable HSTS
+
+**Level:** proposed · **Applies to:** topologies: hosted-no-db, hosted-db; surfaces: api · **Since:** 0.2.0
+
+A platform's HTTPS-only redirect protects the server, but every request a client starts over plain HTTP has already travelled in clear with its credentials. HSTS makes browsers refuse plain HTTP to the API for its max-age.
+
+**Verified by:** `repo-contains`
+
+**How to fix:** Send Strict-Transport-Security: max-age=31536000; includeSubDomains (or enable hsts in the Azure Functions host.json, UseHsts in ASP.NET Core, helmet in Node) and keep the platform's HTTPS-only switch on.
