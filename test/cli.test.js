@@ -101,6 +101,40 @@ describe('check', () => {
   });
 });
 
+describe('surface', () => {
+  const surfaceRules = JSON.stringify([
+    {
+      id: 'HOS-001',
+      title: 'Pages send a CSP',
+      rationale: 'Browsers need a policy for pages.',
+      level: 'must',
+      since: '0.1.0',
+      topologies: ['hosted-db'],
+      surfaces: ['web'],
+      checks: [{ type: 'file-exists', paths: ['netlify.toml'] }],
+    },
+    {
+      id: 'HOS-009',
+      title: 'API responses send a deny-all CSP',
+      rationale: 'An API response must not run script.',
+      level: 'proposed',
+      since: '0.1.0',
+      topologies: ['hosted-db'],
+      surfaces: ['api'],
+      checks: [{ type: 'repo-contains', dirs: ['.'], exts: ['.cs'], pattern: "default-src\\s+'none'" }],
+    },
+  ]);
+  const api = JSON.stringify({ baseline: '0.1.0', ecosystems: ['csharp'], topology: 'hosted-db', surface: 'api' });
+
+  it('checks an API project against the api rules instead of the web rules', async () => {
+    const { deps, out } = harness({ project: { 'baseline.json': api } });
+    deps.registryFs = createMemoryFs({ 'rules/registry/hos.json': surfaceRules });
+    assert.equal(await main(['check', '--json'], deps), 0);
+    assert.match(out.join(''), /"id":"HOS-009"/);
+    assert.doesNotMatch(out.join(''), /"id":"HOS-001"/);
+  });
+});
+
 describe('repo settings', () => {
   const settingRule = JSON.stringify([
     {

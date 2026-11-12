@@ -4,6 +4,9 @@ export type Ecosystem = 'typescript' | 'react' | 'postgres' | 'swift' | 'kotlin'
 
 export type Topology = 'local-only' | 'hosted-no-db' | 'hosted-db';
 
+/** What a hosted project serves: browser content (`web`) or only an HTTP API (`api`). ADR 0007. */
+export type Surface = 'web' | 'api';
+
 export type Result<T, E = string> =
   | { readonly ok: true; readonly value: T }
   | { readonly ok: false; readonly error: E };
@@ -61,6 +64,7 @@ export interface Rule {
   readonly since: string;
   readonly ecosystems?: readonly Ecosystem[];
   readonly topologies?: readonly Topology[];
+  readonly surfaces?: readonly Surface[];
   readonly checks: readonly Check[];
   readonly hint?: string;
 }
@@ -112,6 +116,8 @@ export interface ProjectConfig {
   readonly baseline: string;
   readonly ecosystems: readonly Ecosystem[];
   readonly topology: Topology;
+  /** Absent means `web`, the surface every project had before ADR 0007. */
+  readonly surface?: Surface;
   /** `owner/name` on GitHub; enables the repo-setting checks. */
   readonly repo?: string;
   readonly waivers: readonly Waiver[];

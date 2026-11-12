@@ -16,14 +16,14 @@ baseline check          measures one project against the rules for its profile
 baseline fleet          measures many projects, prints a rules × projects matrix
 baseline docs           generates rules/generated/ (CI fails when it is stale)
         ▲
-baseline.json           in each project: ecosystems, topology, waivers
+baseline.json           in each project: ecosystems, topology, surface, waivers
 ```
 
-A **profile** is ecosystems × topology:
+A **profile** is ecosystems × topology × surface:
 
-| Ecosystems | Topology |
-|---|---|
-| `typescript`, `react`, `postgres` (proven) · `swift`, `kotlin`, `csharp`, `python` (proposed) | `local-only` (file://, no server) · `hosted-no-db` (static host, e.g. Netlify) · `hosted-db` (host + database, e.g. Supabase) |
+| Ecosystems | Topology | Surface |
+|---|---|---|
+| `typescript`, `react`, `postgres` (proven) · `swift`, `kotlin`, `csharp`, `python` (proposed) | `local-only` (file://, no server) · `hosted-no-db` (static host, e.g. Netlify) · `hosted-db` (host + database, e.g. Supabase) | `web` (default: serves pages or assets to browsers) · `api` (HTTP API only, no browser content; [ADR 7](docs/adr/0007-api-surface.md)) |
 
 Levels: `must` fails the run, `should` fails with `--strict`, `proposed` is only reported. A project that cannot
 comply yet records a **waiver** with a reason and an expiry date.
@@ -47,8 +47,9 @@ against the project's own resolved config, so without `node_modules` those check
 }
 ```
 
-`ecosystems` and `topology` select the rules (table above). `repo` is optional and enables the live
-repository-settings checks (step 7).
+`ecosystems` and `topology` select the rules (table above). A hosted project that serves only an HTTP API adds
+`"surface": "api"`: it is then checked for the headers an API sends (`HOS-009..012`) instead of the static-host header
+files. `repo` is optional and enables the live repository-settings checks (step 7).
 
 **3. First run.** From the project root:
 
@@ -131,7 +132,7 @@ cp fleet.local.json.example fleet.local.json   # or write your own, see below
 node bin/baseline.js fleet fleet.local.json
 ```
 
-`fleet.local.json` lists `{ name, path, ecosystems, topology }` per project. Result for teamtodo, kontor and
+`fleet.local.json` lists `{ name, path, ecosystems, topology, surface? }` per project. Result for teamtodo, kontor and
 cracms: [docs/conformance.md](docs/conformance.md).
 
 ## Rules

@@ -3,6 +3,7 @@
     { "name": "teamtodo", "path": "../teamtodo", "ecosystems": ["typescript", "react"], "topology": "local-only" },
     { "name": "kontor", "path": "../kontor", "ecosystems": ["typescript", "react"], "topology": "local-only" },
     { "name": "cracms", "path": "../cracms", "ecosystems": ["typescript", "react", "postgres"], "topology": "hosted-db" },
-    { "name": "INI-Korrektur", "path": "../INI-Korrektur", "ecosystems": ["csharp"], "topology": "local-only" }
+    { "name": "INI-Korrektur", "path": "../INI-Korrektur", "ecosystems": ["csharp"], "topology": "local-only" },
+    { "name": "jira-ado-sync", "path": "../jira-ado-sync", "ecosystems": ["csharp"], "topology": "hosted-db", "surface": "api" }
   ]
 }

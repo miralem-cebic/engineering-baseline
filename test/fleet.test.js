@@ -30,6 +30,12 @@ describe('parseFleet', () => {
   it('rejects broken JSON', () => {
     assert.equal(parseFleet('{').ok, false);
   });
+
+  it('carries the surface of a project', () => {
+    const result = parseFleet(JSON.stringify({ projects: [{ ...entry, topology: 'hosted-db', surface: 'api' }] }));
+    assert.equal(result.ok, true);
+    assert.equal(result.value[0]?.config.surface, 'api');
+  });
 });
 
 describe('runFleet', () => {

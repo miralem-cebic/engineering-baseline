@@ -43,6 +43,11 @@ describe('renderRuleDocs', () => {
     assert.match(page, /Do the thing/);
   });
 
+  it('names the surface of a surface-scoped rule', () => {
+    const page = renderRuleDocs([rule('HOS-009', 'proposed', { topologies: ['hosted-db'], surfaces: ['api'] })])['hos.md'] ?? '';
+    assert.match(page, /\*\*Applies to:\*\* topologies: hosted-db; surfaces: api/);
+  });
+
   it('marks unscoped rules as applying to every project', () => {
     assert.match(renderRuleDocs(rules)['gen.md'] ?? '', /all projects/);
   });

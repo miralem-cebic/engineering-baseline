@@ -17,7 +17,8 @@ to go beyond the template is written down below: [test projects](#test-projects)
 
 ## Adopt it
 
-1. `baseline.json`: `"ecosystems": ["csharp"]` and a topology.
+1. `baseline.json`: `"ecosystems": ["csharp"]` and a topology. A hosted API without browser content (ASP.NET Core,
+   Azure Functions) also sets `"surface": "api"` (ADR 7).
 2. Copy `templates/csharp/` to the solution root: `Directory.Build.props`, `Directory.Packages.props`,
    `BannedSymbols.txt`, `global.json`, `.editorconfig`. Merge by hand when the project has them already.
 3. Move every `Version=` from the `.csproj` files into `Directory.Packages.props`.
@@ -83,6 +84,11 @@ errors. itsmesm sets `dotnet_diagnostic.CA2007.severity = none` under `[*.cs]` a
 
 The template leaves `CA2007` on, because its first project is a WPF app. A project whose code runs only in hosts decides
 for itself and records why next to the setting; a blanket `NoWarn` is not the way (`CSH-016`).
+
+A host that serves only an API declares `"surface": "api"` and sets the response headers of `HOS-009..012` in one
+place: an `IFunctionsWorkerMiddleware` (Azure Functions, isolated worker), ASP.NET Core middleware with `UseHsts()`, or
+`extensions.http.customHeaders` and `hsts` in the Functions `host.json`. Whether the host applies the `host.json`
+settings depends on the hosting model; a request against the deployed function shows it.
 
 ## Not measurable with the current checks
 

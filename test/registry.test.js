@@ -55,6 +55,14 @@ describe('parseRule', () => {
     assert.equal(parseRule({ ...base, topologies: ['moon'] }).ok, false);
   });
 
+  it('keeps known surfaces and rejects unknown ones', () => {
+    const result = parseRule({ ...base, surfaces: ['api'] });
+    assert.equal(result.ok, true);
+    assert.deepEqual(result.value.surfaces, ['api']);
+    assert.equal(parseRule({ ...base, surfaces: ['grpc'] }).ok, false);
+    assert.equal(parseRule({ ...base, surfaces: [] }).ok, false);
+  });
+
   it('accepts every check type with its required fields', () => {
     const checks = [
       { type: 'manual' },
@@ -141,5 +149,35 @@ describe('selectRules', () => {
       (r) => r.id,
     );
     assert.deepEqual(ids, ['GEN-001', 'TS-001', 'HOS-001', 'DB-001']);
+  });
+});
+
+describe('selectRules by surface (ADR 0007)', () => {
+  /** @param {string} id @param {object} extra */
+  const rule = (id, extra = {}) => {
+    const parsed = parseRule({ ...base, id, ...extra });
+    if (!parsed.ok) throw new Error(parsed.error);
+    return parsed.value;
+  };
+  const hosted = { topologies: ['hosted-no-db', 'hosted-db'] };
+  const rules = [
+    rule('HOS-001', { ...hosted, surfaces: ['web'] }),
+    rule('HOS-005', hosted),
+    rule('HOS-009', { ...hosted, surfaces: ['api'] }),
+  ];
+
+  it('treats a project without a surface as web, so existing profiles keep their rules', () => {
+    const ids = selectRules(rules, { ecosystems: ['typescript'], topology: 'hosted-db' }).map((r) => r.id);
+    assert.deepEqual(ids, ['HOS-001', 'HOS-005']);
+  });
+
+  it('swaps web rules for api rules and keeps unscoped ones', () => {
+    const ids = selectRules(rules, { ecosystems: ['csharp'], topology: 'hosted-db', surface: 'api' }).map((r) => r.id);
+    assert.deepEqual(ids, ['HOS-005', 'HOS-009']);
+  });
+
+  it('still requires the topology to match', () => {
+    const ids = selectRules(rules, { ecosystems: ['csharp'], topology: 'local-only', surface: 'api' }).map((r) => r.id);
+    assert.deepEqual(ids, []);
   });
 });
