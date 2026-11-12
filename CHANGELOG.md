@@ -6,11 +6,12 @@ All notable changes are listed here. The format follows
 
 ## [Unreleased]
 
+## [0.2.0] - 2026-11-12
+
 ### Added
 
 - Profile axis `surface` (ADR 7): `baseline.json` and fleet entries may declare `"surface": "api"` for a hosted project that serves only an HTTP API; absent means `web`, so existing profiles select the same rules as before. Rules may scope `surfaces`, and the generated docs show it.
 - API header rules `HOS-009..012` (proposed, `surface` `api`): deny-all `Content-Security-Policy` (`default-src 'none'; frame-ancestors 'none'`), `X-Content-Type-Options: nosniff`, `Cache-Control: no-store` and HSTS, checked with `repo-contains` over C#, TypeScript/JavaScript, Python and Kotlin sources and the Azure Functions `host.json` (OWASP REST Security Cheat Sheet).
-
 - Rule `GEN-021` (proposed): third-party libraries are used only behind a project-owned adapter, so a deprecation, upgrade or replacement touches one module. Principle 5 in `rules/principles.md` (the later principles move up by one) and the guide `docs/third-party-adapters.md`, which also lists how each ecosystem can enforce the boundary. The check is `manual` until the rule has been measured on the fleet.
 - `file-named` check (a file with one of the exact names anywhere below `dirs`). `GEN-014` uses it, so per-project lock files such as NuGet `packages.lock.json` count; the rule no longer fails C# solutions that are locked.
 - C# rules `CSH-007..018` (proposed), measured on INI-Korrektur: unsafe code off, checked arithmetic, MSBuild warnings as errors, banned APIs (`BannedApiAnalyzers`, time and blocking waits), lock files, NuGet audit, pinned SDK, Microsoft.Testing.Platform, no blanket `NoWarn`, `.editorconfig` C# section, `dotnet format --verify-no-changes` in the gate.
@@ -20,7 +21,6 @@ All notable changes are listed here. The format follows
 ### Changed
 
 - `HOS-001..004`, `HOS-006` and `HOS-007` are scoped to the `web` surface: they read static-host header files and the client bundle, which an API does not have. An API project drops its waivers for them by declaring `"surface": "api"`, on a checker that knows the field.
-
 - `conformance.yml`: `baseline-ref` no longer defaults to `main`. Empty, the checker runs from the commit of the workflow file (`job.workflow_sha`), so pinning `uses: ...conformance.yml@<commit>` pins the rules too and Dependabot moves both. Callers on `@main` see no change; callers on an older pin must set `baseline-ref` to the same commit until they move to a release with this change. An unknown version (GitHub Enterprise Server) fails instead of falling back to `main`. README steps 6 and 8, `templates/ci-conformance.yml` and the header of `conformance.yml` show the pinned form. A commit SHA as `baseline-ref` already works since the checkout fix in 0.1.1.
 - `CSH-005` also requires `ManagePackageVersionsCentrally`; the file alone managed nothing.
 
