@@ -16,7 +16,8 @@
           "mypy.ini",
           "pyrightconfig.json"
         ],
-        "pattern": "strict"
+        "pattern": "^\\s*strict\\s*=\\s*true|\"typeCheckingMode\"\\s*:\\s*\"strict\"",
+        "flags": "mi"
       }
     ]
   },
@@ -92,6 +93,139 @@
     "checks": [
       {
         "type": "manual"
+      }
+    ]
+  },
+  {
+    "id": "PY-006",
+    "title": "Ruff enables every rule",
+    "rationale": "With select ALL every exception is a written, reasoned ignore entry, and new rules arrive with the next Ruff update instead of never.",
+    "level": "proposed",
+    "since": "0.3.0",
+    "ecosystems": [
+      "python"
+    ],
+    "hint": "Set select = [\"ALL\"] in [tool.ruff.lint] and give every ignore entry a comment (templates/python/pyproject.toml).",
+    "checks": [
+      {
+        "type": "file-contains",
+        "paths": [
+          "pyproject.toml",
+          "ruff.toml"
+        ],
+        "pattern": "select\\s*=\\s*\\[\\s*\"ALL\"\\s*\\]"
+      }
+    ]
+  },
+  {
+    "id": "PY-007",
+    "title": "Formatting is checked in the gate",
+    "rationale": "A formatter that only runs on request drifts; ruff format --check makes unformatted code fail like a failing test.",
+    "level": "proposed",
+    "since": "0.3.0",
+    "ecosystems": [
+      "python"
+    ],
+    "hint": "Run ruff format --check in the gate and name it in CLAUDE.md, the verify script or the pipeline.",
+    "checks": [
+      {
+        "type": "file-contains",
+        "paths": [
+          "CLAUDE.md",
+          "scripts/verify.sh",
+          ".github/workflows/ci.yml",
+          "azure-pipelines.yml"
+        ],
+        "pattern": "ruff format[^\\n]*--check"
+      }
+    ]
+  },
+  {
+    "id": "PY-008",
+    "title": "The interpreter version is pinned for the tools",
+    "rationale": ".python-version makes uv, pyenv and CI use the interpreter the project is tested with, instead of whatever the machine has.",
+    "level": "proposed",
+    "since": "0.3.0",
+    "ecosystems": [
+      "python"
+    ],
+    "checks": [
+      {
+        "type": "file-exists",
+        "paths": [
+          ".python-version"
+        ]
+      }
+    ]
+  },
+  {
+    "id": "PY-009",
+    "title": "Type-ignore comments name their error code",
+    "rationale": "A bare type: ignore silences every future error on the line; with ignore-without-code mypy accepts only the one that was meant.",
+    "level": "proposed",
+    "since": "0.3.0",
+    "ecosystems": [
+      "python"
+    ],
+    "checks": [
+      {
+        "type": "file-contains",
+        "paths": [
+          "pyproject.toml",
+          "mypy.ini"
+        ],
+        "pattern": "ignore-without-code"
+      }
+    ]
+  },
+  {
+    "id": "PY-010",
+    "title": "Mistyped test markers and passing xfails fail",
+    "rationale": "A misspelt marker silently skips nothing and selects nothing; an xfail that starts passing hides a fixed bug or a broken test.",
+    "level": "proposed",
+    "since": "0.3.0",
+    "ecosystems": [
+      "python"
+    ],
+    "checks": [
+      {
+        "type": "file-contains",
+        "paths": [
+          "pyproject.toml",
+          "pytest.ini"
+        ],
+        "pattern": "--strict-markers"
+      },
+      {
+        "type": "file-contains",
+        "paths": [
+          "pyproject.toml",
+          "pytest.ini"
+        ],
+        "pattern": "xfail_strict\\s*=\\s*true"
+      }
+    ]
+  },
+  {
+    "id": "PY-011",
+    "title": "Locked runtime dependencies are audited in the gate",
+    "rationale": "pip-audit over the exported lock file checks exactly what production installs, wherever the pipeline runs.",
+    "level": "proposed",
+    "since": "0.3.0",
+    "ecosystems": [
+      "python"
+    ],
+    "hint": "uv export --no-dev --no-emit-project --format requirements-txt into a file, then pip-audit --strict --requirement on it.",
+    "checks": [
+      {
+        "type": "file-contains",
+        "paths": [
+          "CLAUDE.md",
+          "scripts/verify.sh",
+          ".github/workflows/ci.yml",
+          "azure-pipelines.yml"
+        ],
+        "pattern": "pip-audit"
       }
     ]
   }

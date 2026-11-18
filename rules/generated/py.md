@@ -41,3 +41,57 @@ requires-python makes the supported interpreter explicit.
 pathlib, dataclasses, tomllib, argparse and asyncio cover a lot without new supply chain.
 
 **Verified by:** `manual`
+
+## PY-006 Ruff enables every rule
+
+**Level:** proposed · **Applies to:** ecosystems: python · **Since:** 0.3.0
+
+With select ALL every exception is a written, reasoned ignore entry, and new rules arrive with the next Ruff update instead of never.
+
+**Verified by:** `file-contains`
+
+**How to fix:** Set select = ["ALL"] in [tool.ruff.lint] and give every ignore entry a comment (templates/python/pyproject.toml).
+
+## PY-007 Formatting is checked in the gate
+
+**Level:** proposed · **Applies to:** ecosystems: python · **Since:** 0.3.0
+
+A formatter that only runs on request drifts; ruff format --check makes unformatted code fail like a failing test.
+
+**Verified by:** `file-contains`
+
+**How to fix:** Run ruff format --check in the gate and name it in CLAUDE.md, the verify script or the pipeline.
+
+## PY-008 The interpreter version is pinned for the tools
+
+**Level:** proposed · **Applies to:** ecosystems: python · **Since:** 0.3.0
+
+.python-version makes uv, pyenv and CI use the interpreter the project is tested with, instead of whatever the machine has.
+
+**Verified by:** `file-exists`
+
+## PY-009 Type-ignore comments name their error code
+
+**Level:** proposed · **Applies to:** ecosystems: python · **Since:** 0.3.0
+
+A bare type: ignore silences every future error on the line; with ignore-without-code mypy accepts only the one that was meant.
+
+**Verified by:** `file-contains`
+
+## PY-010 Mistyped test markers and passing xfails fail
+
+**Level:** proposed · **Applies to:** ecosystems: python · **Since:** 0.3.0
+
+A misspelt marker silently skips nothing and selects nothing; an xfail that starts passing hides a fixed bug or a broken test.
+
+**Verified by:** `file-contains`
+
+## PY-011 Locked runtime dependencies are audited in the gate
+
+**Level:** proposed · **Applies to:** ecosystems: python · **Since:** 0.3.0
+
+pip-audit over the exported lock file checks exactly what production installs, wherever the pipeline runs.
+
+**Verified by:** `file-contains`
+
+**How to fix:** uv export --no-dev --no-emit-project --format requirements-txt into a file, then pip-audit --strict --requirement on it.

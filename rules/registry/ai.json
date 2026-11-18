@@ -41,7 +41,7 @@
         "paths": [
           "CLAUDE.md"
         ],
-        "pattern": "(npm|pnpm|yarn|swift|dotnet|gradle|gradlew|pytest|uv|cargo) (run )?(test|build|lint|check|typecheck)",
+        "pattern": "(npm|pnpm|yarn|swift|dotnet|gradle|gradlew|pytest|uv|cargo) (run )?(test|build|lint|check|typecheck)|uv run (pytest|mypy|ruff)",
         "flags": "i"
       }
     ]
