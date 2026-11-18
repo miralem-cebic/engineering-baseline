@@ -1,0 +1,30 @@
+# Delphi IDE caches
+__history/
+__recovery/
+*.identcache
+*.tvsconfig
+*.local
+
+# Delphi build output
+*.dcu
+*.dcp
+*.exe
+*.dll
+*.bpi
+*.bpl
+*.drc
+*.map
+*.rsm
+*.stat
+*.~*
+
+# Platform output folders written by the IDE
+Win32/
+Win64/
+OSX32/
+OSX64/
+Android/
+iOSDevice64/
+Linux64/
+
+# Keep .res (generated, but Delphi needs it present); project owners may opt to regenerate it in CI instead.

@@ -23,7 +23,7 @@ A **profile** is ecosystems × topology × surface:
 
 | Ecosystems | Topology | Surface |
 |---|---|---|
-| `typescript`, `react`, `postgres` (proven) · `swift`, `kotlin`, `csharp`, `python` (proposed) | `local-only` (file://, no server) · `hosted-no-db` (static host, e.g. Netlify) · `hosted-db` (host + database, e.g. Supabase) | `web` (default: serves pages or assets to browsers) · `api` (HTTP API only, no browser content; [ADR 7](docs/adr/0007-api-surface.md)) |
+| `typescript`, `react`, `postgres` (proven) · `swift`, `kotlin`, `csharp`, `python`, `delphi` (proposed) | `local-only` (file://, no server) · `hosted-no-db` (static host, e.g. Netlify) · `hosted-db` (host + database, e.g. Supabase) | `web` (default: serves pages or assets to browsers) · `api` (HTTP API only, no browser content; [ADR 7](docs/adr/0007-api-surface.md)) |
 
 Levels: `must` fails the run, `should` fails with `--strict`, `proposed` is only reported. A project that cannot
 comply yet records a **waiver** with a reason and an expiry date.
@@ -93,6 +93,7 @@ A waiver hides the failure until the date, then the rule fails again and says th
 | ADR folder and `docs/dependencies.md` | `docs/` | GEN-010, GEN-012 |
 | `scripts/apply-repo-settings.sh` | `scripts/` | REPO-* |
 | `csharp/*` (C# projects, [docs/csharp.md](docs/csharp.md)) | solution root | CSH-* |
+| `delphi/*` (Delphi projects, [docs/delphi.md](docs/delphi.md)) | repo root | DEL-* |
 
 **6. Keep it green in CI.** Add the reusable workflow to the project's `ci.yml`
 ([templates/ci-conformance.yml](templates/ci-conformance.yml)):

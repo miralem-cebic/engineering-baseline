@@ -1,0 +1,111 @@
+[
+  {
+    "id": "DEL-001",
+    "title": "Delphi build artifacts are excluded from version control",
+    "rationale": "Delphi emits DCU/DCP/EXE binaries and writes IDE state into __history/ and __recovery/. A noisy diff and a bloated repo are the first sign the ignore list missed a Delphi project; copying the template fixes it in one pass.",
+    "level": "proposed",
+    "since": "0.3.0",
+    "ecosystems": [
+      "delphi"
+    ],
+    "checks": [
+      {
+        "type": "file-contains",
+        "paths": [
+          ".gitignore"
+        ],
+        "pattern": "__history"
+      }
+    ],
+    "hint": "Copy templates/delphi/.gitignore to the repo root or merge its sections into the existing .gitignore."
+  },
+  {
+    "id": "DEL-002",
+    "title": "Delphi source line endings are normalized",
+    "rationale": "Delphi is a Windows ecosystem; without a .gitattributes entry for its text files, .pas/.dpr/.dproj files land with mixed CRLF and LF depending on the developer's git autocrlf setting, and a small edit then shows as a thousand-line diff. INI-Korrektur hit exactly this on the XE5 to 13 move.",
+    "level": "proposed",
+    "since": "0.3.0",
+    "ecosystems": [
+      "delphi"
+    ],
+    "checks": [
+      {
+        "type": "file-contains",
+        "paths": [
+          ".gitattributes"
+        ],
+        "pattern": "\\*\\.pas\\s+(text|eol=)"
+      }
+    ],
+    "hint": "Copy templates/delphi/.gitattributes (declares *.pas, *.dpr, *.dproj, *.cfg as CRLF text, DFM/BMP/RES as binary)."
+  },
+  {
+    "id": "DEL-003",
+    "title": "The project builds through an MSBuild .dproj file",
+    "rationale": "The .dproj format (Delphi 2007 and later) is MSBuild XML. A pipeline, a conformance checker and a new developer can all build it from one well-known entry point; the older .dpr/.bpg flow needs the IDE and does not script.",
+    "level": "proposed",
+    "since": "0.3.0",
+    "ecosystems": [
+      "delphi"
+    ],
+    "checks": [
+      {
+        "type": "repo-contains",
+        "dirs": [
+          ".",
+          "src",
+          "legacy"
+        ],
+        "exts": [
+          ".dproj"
+        ],
+        "pattern": "<Project\\b"
+      }
+    ],
+    "hint": "Open the .dpr in the Delphi IDE once; it writes the .dproj beside it. Older projects (.bpg) migrate through the IDE's Project > Add to Project Group."
+  },
+  {
+    "id": "DEL-004",
+    "title": "The Delphi edition the project builds against is named",
+    "rationale": "Delphi code often relies on units or syntax that moved between editions (System.UITypes, generics, inline vars). A line in CLAUDE.md or the README naming the edition (RAD Studio 13, XE5, ...) tells a new developer which installer to grab and a pipeline which image to use.",
+    "level": "proposed",
+    "since": "0.3.0",
+    "ecosystems": [
+      "delphi"
+    ],
+    "checks": [
+      {
+        "type": "file-contains",
+        "paths": [
+          "CLAUDE.md",
+          "README.md"
+        ],
+        "pattern": "\\b(?:Delphi|RAD\\s*Studio)\\s+(?:XE\\d?|\\d{1,4})\\b",
+        "flags": "i"
+      }
+    ],
+    "hint": "Add a short line to CLAUDE.md or README.md, e.g. 'Builds with Delphi 13 (RAD Studio 13)'."
+  },
+  {
+    "id": "DEL-005",
+    "title": "The build command is documented",
+    "rationale": "A written MSBuild command (with the .dproj and configuration) is what lets a new developer or a CI agent build the project without opening the IDE. In INI-Korrektur the Delphi 13 upgrade worked because the command path was known; the alternative is a 72k-line codebase that only the person who last opened it can build.",
+    "level": "proposed",
+    "since": "0.3.0",
+    "ecosystems": [
+      "delphi"
+    ],
+    "checks": [
+      {
+        "type": "file-contains",
+        "paths": [
+          "CLAUDE.md",
+          "README.md"
+        ],
+        "pattern": "\\bMSBuild\\b[^\\n]*\\.dproj\\b",
+        "flags": "i"
+      }
+    ],
+    "hint": "Add the exact build command to CLAUDE.md, e.g. 'MSBuild ini_korrektur1.dproj /p:config=Release /t:Build' plus the rsvars.bat call that puts the Delphi tools into PATH."
+  }
+]
