@@ -1,0 +1,36 @@
+# The baseline sections of a pyproject.toml (PY-001..011). Merge them into the project's own file;
+# [project] keeps its name, version and dependencies. Explain every entry in `ignore` with a comment.
+
+[project]
+requires-python = ">=3.14"
+
+[dependency-groups]
+dev = ["mypy", "pip-audit", "pytest", "ruff"]
+
+[tool.ruff]
+line-length = 100
+
+[tool.ruff.lint]
+select = ["ALL"]
+ignore = [
+  "COM812",  # conflicts with the formatter
+  "CPY001",  # no per-file copyright headers; the licence is in the repository
+  "D100", "D101", "D102", "D103", "D104", "D105", "D107",  # docstrings where they help, not everywhere
+  "D203", "D213",  # pick one docstring layout (D211, D212)
+]
+
+[tool.ruff.lint.per-file-ignores]
+"tests/**" = [
+  "S101",     # pytest uses assert
+  "PLR2004",  # literal expected values are the point of a test
+]
+
+[tool.mypy]
+strict = true
+warn_unreachable = true
+enable_error_code = ["ignore-without-code", "redundant-expr", "truthy-bool", "possibly-undefined"]
+
+[tool.pytest.ini_options]
+addopts = ["--strict-markers", "--strict-config", "-ra"]
+filterwarnings = ["error"]
+xfail_strict = true

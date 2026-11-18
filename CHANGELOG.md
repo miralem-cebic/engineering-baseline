@@ -6,6 +6,16 @@ All notable changes are listed here. The format follows
 
 ## [Unreleased]
 
+### Added
+
+- Python rules `PY-006..011` (proposed), measured on the Elementar license key server: Ruff with every rule, `ruff format --check` in the gate, `.python-version`, type-ignore comments with an error code, strict pytest markers and xfails, `pip-audit` over the locked runtime dependencies. The gate rules also accept `scripts/verify.sh` and `azure-pipelines.yml`.
+- `templates/python/` (`pyproject.toml` baseline sections, `.python-version`), tested against the `PY` rules, and `docs/python.md`.
+
+### Fixed
+
+- `PY-001` no longer passes on pytest's `--strict-markers` or `xfail_strict`; it requires `strict = true` or pyright's `strict` mode.
+- `AI-003` accepts `uv run pytest`, `uv run mypy` and `uv run ruff`.
+
 ## [0.2.0] - 2026-11-12
 
 ### Added

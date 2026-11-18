@@ -8,7 +8,7 @@ Generated from `rules/registry`. `must` rules fail a check run, `should` rules f
 | --- | --- |
 | must | 28 |
 | should | 44 |
-| proposed | 60 |
+| proposed | 66 |
 
 - [AI](ai.md): 8 rules
 - [CSH](csh.md): 18 rules
@@ -18,7 +18,7 @@ Generated from `rules/registry`. `must` rules fail a check run, `should` rules f
 - [KOT](kot.md): 5 rules
 - [LOC](loc.md): 8 rules
 - [PIPE](pipe.md): 6 rules
-- [PY](py.md): 5 rules
+- [PY](py.md): 11 rules
 - [REL](rel.md): 5 rules
 - [REPO](repo.md): 9 rules
 - [SEC](sec.md): 4 rules
