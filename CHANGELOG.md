@@ -8,6 +8,8 @@ All notable changes are listed here. The format follows
 
 ### Added
 
+- `delphi` ecosystem (proposed): rules `DEL-001..005`, measured on INI-Korrektur (Delphi XE5 moving to RAD Studio 13, ~72 kLoC VCL/Win32). The rules cover the pieces a Delphi project needs so a pipeline or a new developer can build it: `.gitignore` excludes `__history/` and the DCU/DCP output (`DEL-001`), `.gitattributes` pins `*.pas`/`*.dpr`/`*.dproj` to CRLF (`DEL-002`), the project has an MSBuild `.dproj` (`DEL-003`), the Delphi edition is named in `CLAUDE.md` or `README.md` (`DEL-004`), and the MSBuild command is written down there too (`DEL-005`). Each rule exists because it was a real surprise during the XE5 to 13 upgrade.
+- `templates/delphi/` (`.gitignore`, `.gitattributes`), tested against the `DEL` rules, and `docs/delphi.md`.
 - Python rules `PY-006..011` (proposed), measured on the Elementar license key server: Ruff with every rule, `ruff format --check` in the gate, `.python-version`, type-ignore comments with an error code, strict pytest markers and xfails, `pip-audit` over the locked runtime dependencies. The gate rules also accept `scripts/verify.sh` and `azure-pipelines.yml`.
 - `templates/python/` (`pyproject.toml` baseline sections, `.python-version`), tested against the `PY` rules, and `docs/python.md`.
 

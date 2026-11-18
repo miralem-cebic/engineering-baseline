@@ -1,0 +1,32 @@
+# Delphi text sources: Windows-native, keep CRLF regardless of a developer's core.autocrlf.
+*.pas    text eol=crlf
+*.dpr    text eol=crlf
+*.dproj  text eol=crlf
+*.cfg    text eol=crlf
+*.dpk    text eol=crlf
+*.inc    text eol=crlf
+*.rc     text eol=crlf
+*.pp     text eol=crlf
+
+# Delphi forms: textual DFM is ASCII/UTF-8 text; the binary DFM (TPF0) must stay binary.
+# Projects pick one; declare both as binary unless a project converts every form to text DFM.
+*.dfm    binary
+*.fmx    binary
+
+# Delphi binary assets
+*.res    binary
+*.dcu    binary
+*.dcp    binary
+*.bpi    binary
+*.bpl    binary
+
+# Graphics shipped with the project
+*.bmp    binary
+*.jpg    binary
+*.jpeg   binary
+*.png    binary
+*.ico    binary
+*.gif    binary
+*.eps    binary
+*.ai     binary
+*.pdf    binary

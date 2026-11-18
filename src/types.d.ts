@@ -1,6 +1,6 @@
 export type Level = 'must' | 'should' | 'proposed';
 
-export type Ecosystem = 'typescript' | 'react' | 'postgres' | 'swift' | 'kotlin' | 'csharp' | 'python';
+export type Ecosystem = 'typescript' | 'react' | 'postgres' | 'swift' | 'kotlin' | 'csharp' | 'python' | 'delphi';
 
 export type Topology = 'local-only' | 'hosted-no-db' | 'hosted-db';
 

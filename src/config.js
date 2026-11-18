@@ -1,7 +1,7 @@
 import { isNonEmptyString, isRecord, pick } from './guards.js';
 import { parseJsonc } from './jsonc.js';
 
-export const ECOSYSTEMS = /** @type {const} */ (['typescript', 'react', 'postgres', 'swift', 'kotlin', 'csharp', 'python']);
+export const ECOSYSTEMS = /** @type {const} */ (['typescript', 'react', 'postgres', 'swift', 'kotlin', 'csharp', 'python', 'delphi']);
 export const TOPOLOGIES = /** @type {const} */ (['local-only', 'hosted-no-db', 'hosted-db']);
 export const SURFACES = /** @type {const} */ (['web', 'api']);
 /** The surface of a project that declares none: it serves browser content (ADR 0007). */
